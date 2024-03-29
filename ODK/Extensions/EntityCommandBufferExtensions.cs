@@ -3,7 +3,9 @@
 namespace OdysseyXR.ODK.Extensions
 {
   using Unity.Entities;
+  using Unity.Mathematics;
   using Unity.NetCode;
+  using Unity.Transforms;
 
   /// <summary>
   /// Extensions methods for the <see cref="EntityCommandBuffer"/>
@@ -119,6 +121,86 @@ namespace OdysseyXR.ODK.Extensions
       {
         TargetConnection = targetConnection
       });
+    }
+
+    /// <summary>
+    /// Spawns a new entity
+    /// </summary>
+    /// <param name="entityCommandBuffer">
+    /// The <see cref="EntityCommandBuffer"/>
+    /// </param>
+    /// <param name="entityPrefab">
+    /// The <see cref="Entity"/> to spawn
+    /// </param>
+    /// <param name="location">
+    /// The starting location of the spawned entity
+    /// </param>
+    /// <param name="rotation">
+    /// The starting rotation of the spawned entity
+    /// </param>
+    /// <param name="scale">
+    /// The starting scale of the spawned entity
+    /// </param>
+    /// <returns>
+    /// The spawned entity
+    /// </returns>
+    public static Entity SpawnEntity(
+      this EntityCommandBuffer entityCommandBuffer,
+      Entity entityPrefab,
+      float3 location,
+      float3 rotation,
+      int scale)
+    {
+      var playerEntity = entityCommandBuffer.Instantiate(entityPrefab);
+      entityCommandBuffer.SetComponent(playerEntity, new LocalTransform
+      {
+        Position = location,
+        Rotation = quaternion.Euler(rotation),
+        Scale    = scale,
+      });
+      return playerEntity;
+    }
+
+    /// <summary>
+    /// Spawns a new entity
+    /// </summary>
+    /// <param name="entityCommandBuffer">
+    /// The <see cref="EntityCommandBuffer.ParallelWriter"/>
+    /// </param>
+    /// <param name="sortKey">
+    /// The index of the entity being operated on in a parallel systemAPI query
+    /// </param>
+    /// <param name="entityPrefab">
+    /// The <see cref="Entity"/> to spawn
+    /// </param>
+    /// <param name="location">
+    /// The starting location of the spawned entity
+    /// </param>
+    /// <param name="rotation">
+    /// The starting rotation of the spawned entity
+    /// </param>
+    /// <param name="scale">
+    /// The starting scale of the spawned entity
+    /// </param>
+    /// <returns>
+    /// The spawned entity
+    /// </returns>
+    public static Entity SpawnEntity(
+      this EntityCommandBuffer.ParallelWriter entityCommandBuffer,
+      int sortKey,
+      Entity entityPrefab,
+      float3 location,
+      float3 rotation,
+      int scale)
+    {
+      var playerEntity = entityCommandBuffer.Instantiate(sortKey, entityPrefab);
+      entityCommandBuffer.SetComponent(sortKey, playerEntity, new LocalTransform
+      {
+        Position = location,
+        Rotation = quaternion.Euler(rotation),
+        Scale    = scale,
+      });
+      return playerEntity;
     }
   }
 }
