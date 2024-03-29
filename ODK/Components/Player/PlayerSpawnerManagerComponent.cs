@@ -5,10 +5,11 @@ namespace OdysseyXR.ODK.Components
   using Unity.Entities;
 
   /// <summary>
-  /// Component data for a player prefab
+  /// Component data for the player spawner manager
   /// </summary>
-  public struct PlayerPrefabComponent : IComponentData
+  public struct PlayerSpawnerManagerComponent : IComponentData
   {
+    public Entity Instance;
     public Entity PlayerPrefab;
   }
 }

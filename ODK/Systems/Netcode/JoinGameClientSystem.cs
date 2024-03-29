@@ -24,7 +24,7 @@ namespace OdysseyXR.ODK.Systems.Netcode
         .WithAll<NetworkId>()
         .WithNone<NetworkStreamInGame>();
 
-      state.RequireForUpdate<PlayerSpawnerInstanceComponent>();
+      state.RequireForUpdate<PlayerSpawnerManagerComponent>();
       state.RequireForUpdate(state.GetEntityQuery(entityQueryBuilder));
     }
 

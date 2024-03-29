@@ -1,17 +1,14 @@
 #nullable enable
 
-using Unity.Mathematics;
-using Unity.Transforms;
-using UnityEngine;
-
 namespace OdysseyXR.ODK.Systems.Player
 {
   using OdysseyXR.ODK.Commands.Player;
   using OdysseyXR.ODK.Components;
-  using OdysseyXR.ODK.Core.Logging;
   using Unity.Collections;
   using Unity.Entities;
   using Unity.NetCode;
+  using Unity.Transforms;
+  using UnityEngine;
 
   /// <summary>
   /// Processes requests to spawn a player
@@ -19,9 +16,10 @@ namespace OdysseyXR.ODK.Systems.Player
   [WorldSystemFilter(WorldSystemFilterFlags.ServerSimulation)]
   public partial struct PlayerSpawnServerSystem : ISystem
   {
-    public ComponentLookup<PlayerPrefabComponent> PlayerPrefabComponentLookup;
-    public BufferLookup<PlayerSpawnerComponent>   PlayerSpawnerComponentLookup;
-    public ComponentLookup<NetworkId>             NetworkIdComponentLookup;
+    private ComponentLookup<NetworkId> _networkIdLookup;
+    private Entity _playerPrefab;
+    private DynamicBuffer<PlayerSpawnerTransformComponent> _playerSpawnerTransformsBuffer;
+    private bool _lookedUpPlayerManager;
 
     public void OnCreate(ref SystemState state)
     {
@@ -29,47 +27,38 @@ namespace OdysseyXR.ODK.Systems.Player
         .WithAll<SpawnPlayerClientRpc>()
         .WithAll<ReceiveRpcCommandRequest>();
 
-      state.RequireForUpdate<PlayerSpawnerInstanceComponent>();
+      state.RequireForUpdate<PlayerSpawnerManagerComponent>();
       state.RequireForUpdate(state.GetEntityQuery(entityQueryBuilder));
 
-      PlayerPrefabComponentLookup  = state.GetComponentLookup<PlayerPrefabComponent>(true);
-      PlayerSpawnerComponentLookup = state.GetBufferLookup<PlayerSpawnerComponent>(true);
-      NetworkIdComponentLookup     = state.GetComponentLookup<NetworkId>(true);
+      _networkIdLookup               = state.GetComponentLookup<NetworkId>(true);
     }
 
     public void OnUpdate(ref SystemState state)
     {
-      PlayerPrefabComponentLookup.Update(ref state);
-      PlayerSpawnerComponentLookup.Update(ref state);
-      NetworkIdComponentLookup.Update(ref state);
+      _networkIdLookup.Update(ref state);
+
+      if (!_lookedUpPlayerManager)
+      {
+        var playerSpawnerTransformsLookup = state.GetBufferLookup<PlayerSpawnerTransformComponent>(true);
+        var playerSpawnerManager          = SystemAPI.GetSingleton<PlayerSpawnerManagerComponent>();
+        _playerPrefab                     = playerSpawnerManager.PlayerPrefab;
+        _playerSpawnerTransformsBuffer    = playerSpawnerTransformsLookup[playerSpawnerManager.Instance];
+
+        _lookedUpPlayerManager = true;
+      }
       
-      var playerSpawnerManagerEntity      = SystemAPI.GetSingleton<PlayerSpawnerInstanceComponent>().Instance;
-      if (!PlayerSpawnerComponentLookup.HasBuffer(playerSpawnerManagerEntity))
-      {
-        Logger.Error("Player spawner manager does not have an initialized spawner config buffer");
-        return;
-      }
-
-      var playerSpawnerConfigBuffer = PlayerSpawnerComponentLookup[playerSpawnerManagerEntity];
-      if (playerSpawnerConfigBuffer.Length <= 0)
-      {
-        Logger.Error("Player spawner manager spawner config buffer has no entries");
-        return;
-      }
-
-      var playerPrefab        = PlayerPrefabComponentLookup[playerSpawnerManagerEntity].PlayerPrefab;
       var entityCommandBuffer = new EntityCommandBuffer(Allocator.Temp);
-
-      foreach (var (rpcRequest, spawnPlayerClientRpc, entity) in SystemAPI
-                 .Query<RefRO<ReceiveRpcCommandRequest>, RefRO<SpawnPlayerClientRpc>>()
-                 .WithEntityAccess()
-              )
+      foreach (var (rpcRequest, entity) in SystemAPI
+        .Query<RefRO<ReceiveRpcCommandRequest>>()
+        .WithAll<SpawnPlayerClientRpc>()
+        .WithEntityAccess()
+      )
       {
-        var playerEntity = entityCommandBuffer.Instantiate(playerPrefab);
+        var playerEntity = entityCommandBuffer.Instantiate(_playerPrefab);
 
         // Choose a random spawner location to start at
-        var index               = UnityEngine.Random.Range(0, playerSpawnerConfigBuffer.Length);
-        var playerSpawnerConfig = playerSpawnerConfigBuffer[index];
+        var index               = UnityEngine.Random.Range(0, _playerSpawnerTransformsBuffer.Length);
+        var playerSpawnerConfig = _playerSpawnerTransformsBuffer[index];
 
         entityCommandBuffer.SetComponent(playerEntity, new LocalTransform
         {
@@ -81,7 +70,7 @@ namespace OdysseyXR.ODK.Systems.Player
         // Link the player prefab to the connection of the player
         entityCommandBuffer.SetComponent(playerEntity, new GhostOwner
         {
-          NetworkId = NetworkIdComponentLookup[rpcRequest.ValueRO.SourceConnection].Value
+          NetworkId = _networkIdLookup[rpcRequest.ValueRO.SourceConnection].Value
         });
         entityCommandBuffer.AppendToBuffer(rpcRequest.ValueRO.SourceConnection, new LinkedEntityGroup
         {
