@@ -1,8 +1,8 @@
 ﻿#nullable enable
 
-namespace OdysseyXR.ODK.Systems.Netcode
+namespace OdysseyXR.ODK.Systems.NetCode
 {
-  using OdysseyXR.ODK.Commands.Netcode;
+  using OdysseyXR.ODK.Commands.NetCode;
   using Unity.Burst;
   using Unity.Collections;
   using Unity.Entities;

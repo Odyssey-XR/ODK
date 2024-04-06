@@ -1,8 +1,8 @@
 #nullable enable
 
-namespace OdysseyXR.ODK.Systems.Netcode
+namespace OdysseyXR.ODK.Systems.NetCode
 {
-  using OdysseyXR.ODK.Commands.Netcode;
+  using OdysseyXR.ODK.Commands.NetCode;
   using OdysseyXR.ODK.Commands.Player;
   using OdysseyXR.ODK.Components;
   using OdysseyXR.ODK.Extensions;

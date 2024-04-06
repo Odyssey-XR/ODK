@@ -1,6 +1,6 @@
 #nullable enable
 
-namespace OdysseyXR.ODK.Commands.Netcode
+namespace OdysseyXR.ODK.Commands.NetCode
 {
   using Unity.NetCode;
 
