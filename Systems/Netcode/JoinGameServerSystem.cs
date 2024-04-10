@@ -3,6 +3,7 @@
 namespace OdysseyXR.ODK.Systems.NetCode
 {
   using OdysseyXR.ODK.Commands.NetCode;
+  using OdysseyXR.ODK.Components.Player;
   using Unity.Burst;
   using Unity.Collections;
   using Unity.Entities;
@@ -16,6 +17,7 @@ namespace OdysseyXR.ODK.Systems.NetCode
   public partial struct JoinGameServerSystem : ISystem
   {
     private ComponentLookup<NetworkId> _networkIdComponentLookup;
+    private Entity                     _playerPrefab;
 
     public void OnCreate(ref SystemState state)
     {
@@ -30,16 +32,16 @@ namespace OdysseyXR.ODK.Systems.NetCode
 
     public void OnUpdate(ref SystemState state)
     {
-      var worldName = state.WorldUnmanaged.Name;
+      var worldName           = state.WorldUnmanaged.Name;
       var entityCommandBuffer = new EntityCommandBuffer(Allocator.Temp);
 
       _networkIdComponentLookup.Update(ref state);
 
-      foreach (var (receivedRpc, entity) in SystemAPI
-        .Query<RefRO<ReceiveRpcCommandRequest>>()
-        .WithAll<JoinGameClientRpc>()
-        .WithEntityAccess()
-      )
+      foreach (var (receivedRpc, sourceEntity) in SystemAPI
+                 .Query<RefRO<ReceiveRpcCommandRequest>>()
+                 .WithAll<JoinGameClientRpc>()
+                 .WithEntityAccess()
+              )
       {
         entityCommandBuffer.AddComponent<NetworkStreamInGame>(
           receivedRpc.ValueRO.SourceConnection
@@ -48,7 +50,16 @@ namespace OdysseyXR.ODK.Systems.NetCode
         var networkId = _networkIdComponentLookup[receivedRpc.ValueRO.SourceConnection];
         Core.Logging.Logger.Log($"`{worldName}` setting connection `{networkId.Value}` to in game");
 
-        entityCommandBuffer.DestroyEntity(entity);
+        // Create a new player entity for spawning
+        var playerEntity = entityCommandBuffer.CreateEntity();
+        entityCommandBuffer.AddComponent(playerEntity, new SpawnPlayerServerRequestComponent
+          {
+            SourceConnection = receivedRpc.ValueRO.SourceConnection,
+          }
+        );
+        
+        // Destroy rpc request
+        entityCommandBuffer.DestroyEntity(sourceEntity);
       }
 
       entityCommandBuffer.Playback(state.EntityManager);

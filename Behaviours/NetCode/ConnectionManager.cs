@@ -17,52 +17,17 @@ namespace OdysseyXR.ODK.Behaviours.NetCode
     [SerializeField] private TMP_InputField? _portField;
     [SerializeField] private Button?         _connectButton;
 
-    private string Address => _addressField?.text ?? "7979";
-
-    private ushort Port => ushort.Parse(_portField?.text ?? "7979");
+    public string Address => _addressField?.text ?? "127.0.0.1";
+    public ushort Port    => ushort.Parse(_portField?.text ?? "7979");
 
     private void OnEnable()
     {
-      _connectionModeDropdown?.onValueChanged.AddListener(OnConnectionModeChanged);
       _connectButton?.onClick.AddListener(OnButtonConnect);
-
-      if (_connectionModeDropdown is not null)
-        OnConnectionModeChanged(_connectionModeDropdown.value);
     }
 
     private void OnDisable()
     {
-      _connectionModeDropdown?.onValueChanged.RemoveAllListeners();
       _connectButton?.onClick.RemoveAllListeners();
-    }
-
-    private void OnConnectionModeChanged(int connectionMode)
-    {
-      if (_connectButton is null)
-        return;
-
-      string buttonLabel;
-      _connectButton.enabled = true;
-
-      switch (connectionMode)
-      {
-        case 0:
-          buttonLabel = "Start Host";
-          break;
-        case 1:
-          buttonLabel = "Start Server";
-          break;
-        case 2:
-          buttonLabel = "Start Client";
-          break;
-        default:
-          buttonLabel            = "<ERROR>";
-          _connectButton.enabled = false;
-          break;
-      }
-
-      var buttonText = _connectButton.GetComponentInChildren<TextMeshProUGUI>();
-      buttonText.text = buttonLabel;
     }
 
     private void OnButtonConnect()
@@ -73,8 +38,8 @@ namespace OdysseyXR.ODK.Behaviours.NetCode
       switch (_connectionModeDropdown?.value)
       {
         case 0:
-          StartServer();
           StartClient();
+          StartServer();
           break;
         case 1:
           StartServer();
@@ -83,7 +48,7 @@ namespace OdysseyXR.ODK.Behaviours.NetCode
           StartClient();
           break;
         default:
-          Debug.LogError("Error: Unknown connection mode", gameObject);
+          Core.Logging.Logger.Error($"Error: Unknown connection mode {_connectionModeDropdown?.value}");
           break;
       }
     }
@@ -103,28 +68,23 @@ namespace OdysseyXR.ODK.Behaviours.NetCode
     private void StartServer()
     {
       var serverWorld = ClientServerBootstrap.CreateServerWorld("ODK Server World");
+      World.DefaultGameObjectInjectionWorld = serverWorld;
 
-      var serverEndpoint = NetworkEndpoint.AnyIpv4.WithPort(Port);
-      {
-        using var networkDriverQuery =
-          serverWorld.EntityManager.CreateEntityQuery(ComponentType.ReadWrite<NetworkStreamDriver>());
-        networkDriverQuery.GetSingletonRW<NetworkStreamDriver>().ValueRW.Listen(serverEndpoint);
-      }
+      var serverEndpoint = NetworkEndpoint.Parse(Address, Port);
+
+      using var query = serverWorld.EntityManager.CreateEntityQuery(ComponentType.ReadWrite<NetworkStreamDriver>());
+      query.GetSingletonRW<NetworkStreamDriver>().ValueRW.Listen(serverEndpoint);
     }
 
     private void StartClient()
     {
       var clientWorld = ClientServerBootstrap.CreateClientWorld("ODK Client World");
-
-      var connectionEndpoint = NetworkEndpoint.Parse(Address, Port);
-      {
-        using var networkDriverQuery =
-          clientWorld.EntityManager.CreateEntityQuery(ComponentType.ReadWrite<NetworkStreamDriver>());
-        networkDriverQuery.GetSingletonRW<NetworkStreamDriver>().ValueRW
-          .Connect(clientWorld.EntityManager, connectionEndpoint);
-      }
-
       World.DefaultGameObjectInjectionWorld = clientWorld;
+
+      var clientEndpoint = NetworkEndpoint.Parse(Address, Port);
+
+      using var query = clientWorld.EntityManager.CreateEntityQuery(ComponentType.ReadWrite<NetworkStreamDriver>());
+      query.GetSingletonRW<NetworkStreamDriver>().ValueRW.Connect(clientWorld.EntityManager, clientEndpoint);
     }
   }
 }
