@@ -12,15 +12,10 @@ namespace OdysseyXR.ODK.Core.Netcode
   [UnityEngine.Scripting.Preserve]
   public class AutoBootstrap : ClientServerBootstrap
   {
-    /// <summary>
-    /// The port the world should connect to
-    /// </summary>
-    public ushort Port { get; protected set; } = 7979;
-
     public override bool Initialize(string defaultWorldName)
     {
-      AutoConnectPort = Port;
-      return base.Initialize(defaultWorldName);
+      CreateLocalWorld(defaultWorldName);
+      return true;
     }
   }
 }

@@ -3,8 +3,6 @@
 namespace OdysseyXR.ODK.Systems.NetCode
 {
   using OdysseyXR.ODK.Commands.NetCode;
-  using OdysseyXR.ODK.Commands.Player;
-  using OdysseyXR.ODK.Components;
   using OdysseyXR.ODK.Extensions;
   using Unity.Burst;
   using Unity.Collections;
@@ -24,7 +22,6 @@ namespace OdysseyXR.ODK.Systems.NetCode
         .WithAll<NetworkId>()
         .WithNone<NetworkStreamInGame>();
 
-      state.RequireForUpdate<PlayerSpawnerManagerComponent>();
       state.RequireForUpdate(state.GetEntityQuery(entityQueryBuilder));
     }
 
@@ -39,7 +36,6 @@ namespace OdysseyXR.ODK.Systems.NetCode
       {
         entityCommandBuffer.AddComponent<NetworkStreamInGame>(entity);
         entityCommandBuffer.SendRpcRequest<JoinGameClientRpc>(entity);
-        entityCommandBuffer.SendRpcRequest(new SpawnPlayerClientRpc { FirstEverSpawn = true }, entity);
       }
 
       entityCommandBuffer.Playback(state.EntityManager);
