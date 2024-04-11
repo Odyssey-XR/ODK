@@ -30,8 +30,8 @@ namespace OdysseyXR.ODK.Systems.NetCode
       using var entityCommandBuffer = new EntityCommandBuffer(Allocator.Temp);
       foreach (var (_, entity) in SystemAPI
         .Query<RefRO<NetworkId>>()
-        .WithEntityAccess()
         .WithNone<NetworkStreamInGame>()
+        .WithEntityAccess()
       )
       {
         entityCommandBuffer.AddComponent<NetworkStreamInGame>(entity);

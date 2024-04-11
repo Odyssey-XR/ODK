@@ -22,8 +22,7 @@ namespace OdysseyXR.ODK.Systems.NetCode
     public void OnCreate(ref SystemState state)
     {
       var entityQueryBuilder = new EntityQueryBuilder(Allocator.Temp)
-        .WithAll<JoinGameClientRpc>()
-        .WithAll<ReceiveRpcCommandRequest>();
+        .WithAll<JoinGameClientRpc, ReceiveRpcCommandRequest>();
 
       state.RequireForUpdate(state.GetEntityQuery(entityQueryBuilder));
 
