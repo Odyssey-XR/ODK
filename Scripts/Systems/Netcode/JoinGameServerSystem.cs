@@ -49,7 +49,7 @@ namespace OdysseyXR.ODK.Systems.NetCode
         var networkId = _networkIdComponentLookup[receivedRpc.ValueRO.SourceConnection];
         Core.Logging.Logger.Log($"`{worldName}` setting connection `{networkId.Value}` to in game");
 
-        // Create a new player entity for spawning
+        // Create a new player entity spawning request
         var playerEntity = entityCommandBuffer.CreateEntity();
         entityCommandBuffer.AddComponent(playerEntity, new SpawnPlayerServerRequestComponent
           {
