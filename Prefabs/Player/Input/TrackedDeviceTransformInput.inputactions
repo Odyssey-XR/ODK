@@ -1,0 +1,184 @@
+{
+    "name": "TrackedDeviceTransformInput",
+    "maps": [
+        {
+            "name": "LeftController",
+            "id": "54f02707-cd4d-4d2d-b70c-cf42a92d1a7c",
+            "actions": [
+                {
+                    "name": "Position",
+                    "type": "Value",
+                    "id": "ceccacee-93c5-4016-9a68-b6e2b8081d62",
+                    "expectedControlType": "Vector3",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Rotation",
+                    "type": "Value",
+                    "id": "da0c6896-9f4f-47c1-9ba8-b2c9aed84069",
+                    "expectedControlType": "Quaternion",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "b637bdec-d731-4bd9-88ff-76dca348987d",
+                    "path": "<XRController>{LeftHand}/devicePosition",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Position",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7dd39c7c-3303-4512-9a2a-866b66d076cb",
+                    "path": "<XRController>{LeftHand}/deviceRotation",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Rotation",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "RightController",
+            "id": "6c6e0df7-a3e1-49c2-971f-229d3fbb2f54",
+            "actions": [
+                {
+                    "name": "Position",
+                    "type": "Value",
+                    "id": "bea36c64-c3a4-4ebe-a6ab-e2ca8f6bb256",
+                    "expectedControlType": "Vector3",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Rotation",
+                    "type": "Value",
+                    "id": "26a4eb37-4ca0-447b-b81b-9c36566929b0",
+                    "expectedControlType": "Quaternion",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "25182c9c-c39c-4264-90aa-270c5cffc403",
+                    "path": "<XRController>{RightHand}/devicePosition",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Position",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "07dd5438-405e-455b-acec-d3753c527502",
+                    "path": "<XRController>{RightHand}/deviceRotation",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Rotation",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "HMD",
+            "id": "ea77fdcb-6374-4f0d-ad38-8b9268197bd1",
+            "actions": [
+                {
+                    "name": "Position",
+                    "type": "Value",
+                    "id": "548b24f6-c339-4eab-aa99-05fd21497af7",
+                    "expectedControlType": "Vector3",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Rotation",
+                    "type": "Value",
+                    "id": "23ba1f05-13c7-41ad-98f1-d3c3b95a55be",
+                    "expectedControlType": "Quaternion",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "20f915b4-b8ec-45d3-a5a2-f0bd68fcad72",
+                    "path": "<OpenXRHmd>/centerEyePosition",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Position",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "44c0ce7c-f071-48e0-900e-336036ed2dc8",
+                    "path": "<XRHMD>/centerEyePosition",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Position",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "88495f0c-b675-46d1-9d9d-486865fa5ef1",
+                    "path": "<OculusHMD>/centerEyePosition",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Position",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7a0d5d5c-1838-414a-9c90-962565167ca3",
+                    "path": "<OpenXRHmd>/centerEyeRotation",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Rotation",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": [
+        {
+            "name": "TrackedDeviceInputScheme",
+            "bindingGroup": "TrackedDeviceInputScheme",
+            "devices": [
+                {
+                    "devicePath": "<XRController>",
+                    "isOptional": false,
+                    "isOR": false
+                }
+            ]
+        }
+    ]
+}
