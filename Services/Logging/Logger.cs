@@ -1,6 +1,6 @@
 ﻿#nullable enable
 
-namespace OdysseyXR.ODK.Core.Logging
+namespace OdysseyXR.ODK.Services.Logging
 {
   using System.Text;
   using UnityEngine;
