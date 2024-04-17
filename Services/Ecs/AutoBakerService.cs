@@ -1,3 +1,5 @@
+using System.Collections;
+
 #if UNITY_EDITOR
 #nullable enable
 
@@ -21,9 +23,9 @@ namespace Unity.Entities
   {
     private struct BakedPropertyData
     {
-      public string    BakedName;
+      public string BakedName;
       public FieldInfo AuthoredTypeInfo;
-      public bool      IsManagedType;
+      public bool IsManagedType;
     }
 
     static AutoBakerService()
@@ -56,9 +58,9 @@ namespace Unity.Entities
         .Where(field => field.GetCustomAttribute<BakeAsFieldAttribute>() is not null)
         .Select(field => new BakedPropertyData
         {
-          BakedName        = field.GetCustomAttribute<BakeAsFieldAttribute>().Name ?? field.Name,
+          BakedName = field.GetCustomAttribute<BakeAsFieldAttribute>().Name ?? field.Name,
           AuthoredTypeInfo = field,
-          IsManagedType    = !field.FieldType.IsValueType,
+          IsManagedType = !field.FieldType.IsValueType,
         });
 
       var bakingEntities = authoredType
@@ -66,10 +68,16 @@ namespace Unity.Entities
         .Where(field => field.GetCustomAttribute<BakeAsEntityAttribute>() is not null)
         .Select(field => new BakedPropertyData
         {
-          BakedName        = field.GetCustomAttribute<BakeAsEntityAttribute>().Name ?? field.Name,
+          BakedName = field.GetCustomAttribute<BakeAsEntityAttribute>().Name ?? field.Name,
           AuthoredTypeInfo = field,
-          IsManagedType    = true,
+          IsManagedType = true,
         });
+
+      if (bakingFields.Any(_ => _.IsManagedType))
+      {
+        Logger.Error($"Auto baker doesn't support managed types yet. MonoBehaviour is {authoredType.Name}");
+        return;
+      }
 
       var namespaces = bakingFields
         .Concat(bakingEntities)
@@ -98,21 +106,32 @@ namespace Unity.Entities
 
       files.Add((
         GenerateBakerCode(authoredType, componentName, bakingFields, bakingEntities, namespaces),
-        "Baker"));
+        "Baker"
+      ));
+
+
+      if (bakingEntities.Any())
+      {
+        files.Add((
+          GenerateEntityPatchSystem(authoredType, componentName, bakingEntities, namespaces),
+          $"EntityPatchSystem"
+        ));
+      }
+      
       foreach (var file in files)
         GenerateFile(authoredType, file.Item1, file.Item2);
     }
 
     static string GenerateComponentCode(
-      Type authoredType,
+      MemberInfo authoredType,
       IEnumerable<BakedPropertyData> bakingFields,
       IEnumerable<BakedPropertyData> entityFields,
       IEnumerable<string> namespaces)
     {
-      var sb                 = new StringBuilder();
-      var componentName      = $"{authoredType.Name}Component";
+      var sb = new StringBuilder();
+      var componentName = $"{authoredType.Name}Component";
       var isManagedComponent = bakingFields.Any(field => field.IsManagedType);
-      var componentDataType  = isManagedComponent ? "class" : "struct";
+      var componentDataType = isManagedComponent ? "class" : "struct";
 
       sb.AppendLine("using Unity.Entities;");
       foreach (var assembly in namespaces)
@@ -140,7 +159,7 @@ namespace Unity.Entities
       IEnumerable<BakedPropertyData> bakingEntities,
       IEnumerable<string> namespaces)
     {
-      var sb        = new StringBuilder();
+      var sb = new StringBuilder();
       var bakerName = $"{authoredType.Name}Baker";
 
       sb.AppendLine("using System.Collections.Generic;");
@@ -171,9 +190,9 @@ namespace Unity.Entities
         sb.AppendLine($"    var {entity.BakedName}Entity = CreateAdditionalEntity(TransformUsageFlags.None);");
         sb.AppendLine($"    AddComponent<PatchEntityReferenceRequestComponent>({entity.BakedName}Entity);");
         sb.AppendLine($"    AddComponentObject({entity.BakedName}Entity, new PatchEntityReferenceDataComponent() {{");
-        sb.AppendLine($"      AuthoredBehaviour = (AuthoredBehaviour)authoring.{entity.AuthoredTypeInfo.Name},");
-        sb.AppendLine($"      ComponentData = &bakedComponent,");
-        sb.AppendLine($"      BakedName = \"{entity.BakedName}\",");
+        sb.AppendLine($"      SourceEntity = entity,");
+        sb.AppendLine($"      ReferencedBehaviour = (AuthoredBehaviour)authoring.{entity.AuthoredTypeInfo.Name},");
+        sb.AppendLine($"      BakedEntityName = \"{entity.BakedName}\",");
         sb.AppendLine($"    }});");
         sb.AppendLine();
       }
@@ -186,10 +205,79 @@ namespace Unity.Entities
       return sb.ToString();
     }
 
+    static string GenerateEntityPatchSystem(
+      Type authoredType,
+      string componentName,
+      IEnumerable<BakedPropertyData> bakingEntities,
+      IEnumerable<string> namespaces)
+    {
+      var sb = new StringBuilder();
+
+      sb.AppendLine("using Unity.Entities;");
+      sb.AppendLine("using Unity.Collections;");
+      sb.AppendLine("using OdysseyXR.ODK.Components.ECS;");
+      foreach (var assembly in namespaces)
+        sb.AppendLine($"using {assembly};");
+
+      sb.AppendLine();
+      sb.AppendLine($"[WorldSystemFilter(WorldSystemFilterFlags.BakingSystem)]");
+      sb.AppendLine($"public partial struct Patch{componentName}EntityReferenceSystem : ISystem");
+      sb.AppendLine($"{{");
+      sb.AppendLine($"  private ComponentLookup<{componentName}> _sourceComponentLookup;");
+      sb.AppendLine();
+      sb.AppendLine($"  public void OnCreate(ref SystemState state)");
+      sb.AppendLine($"  {{");
+      sb.AppendLine($"    _sourceComponentLookup = state.GetComponentLookup<{componentName}>();");
+      sb.AppendLine($"  }}");
+      sb.AppendLine();
+      sb.AppendLine($"  public void OnUpdate(ref SystemState state)");
+      sb.AppendLine($"  {{");
+      sb.AppendLine($"    _sourceComponentLookup.Update(ref state);");
+      sb.AppendLine();
+      sb.AppendLine($"    var ecb = new EntityCommandBuffer(Allocator.Temp);");
+      sb.AppendLine($"    foreach (var (_, entity) in SystemAPI.Query<RefRO<PatchEntityReferenceRequestComponent>>().WithEntityAccess())");
+      sb.AppendLine($"    {{");
+      sb.AppendLine($"      PatchEntityReferenceDataComponent patchEntityRequest;");
+      sb.AppendLine($"      if (state.EntityManager.HasComponent<PatchEntityReferenceDataComponent>(entity))");
+      sb.AppendLine($"      {{");
+      sb.AppendLine($"        patchEntityRequest = state.EntityManager.GetComponentObject<PatchEntityReferenceDataComponent>(entity);");
+      sb.AppendLine($"      }}");
+      sb.AppendLine($"      else");
+      sb.AppendLine($"      {{");
+      sb.AppendLine($"        continue;");
+      sb.AppendLine($"      }}");
+      sb.AppendLine();
+      sb.AppendLine($"      if (!state.EntityManager.HasComponent<{componentName}>(patchEntityRequest.SourceEntity))");
+      sb.AppendLine($"      {{");
+      sb.AppendLine($"        continue;");
+      sb.AppendLine($"      }}");
+      sb.AppendLine();
+      sb.AppendLine($"      var sourceComponent = _sourceComponentLookup[patchEntityRequest.SourceEntity];");
+      sb.AppendLine();
+        
+      foreach (var field in bakingEntities)
+      {
+        sb.AppendLine($"      if (patchEntityRequest.BakedEntityName == \"{field.BakedName}\")");
+        sb.AppendLine($"      {{");
+        sb.AppendLine($"        sourceComponent.{field.BakedName} = patchEntityRequest.ReferencedBehaviour.AuthoredEntity;");
+        sb.AppendLine($"      }}");
+        sb.AppendLine();
+      }
+      
+      sb.AppendLine($"      ecb.RemoveComponent<PatchEntityReferenceDataComponent>(entity);");
+      sb.AppendLine($"      ecb.RemoveComponent<PatchEntityReferenceRequestComponent>(entity);");
+      sb.AppendLine($"    }}");
+      sb.AppendLine($"    ecb.Playback(state.EntityManager);");
+      sb.AppendLine($"  }}");
+      sb.AppendLine($"}}");
+
+      return sb.ToString();
+    }
+
     static void GenerateFile(Type authoredType, string code, string type)
     {
-      var typeName  = $"{authoredType.Name}{type}.cs";
-      var directory = Path.Combine(Application.dataPath, "Generated", "ODK", $"{type}s");
+      var typeName = $"{authoredType.Name}{type}.cs";
+      var directory = Path.Combine(Application.dataPath, "Plugins", "ODK", "Generated", $"{type}s");
 
       if (!Directory.Exists(directory))
         Directory.CreateDirectory(directory);
