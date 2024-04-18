@@ -16,6 +16,7 @@ namespace Unity.Entities
   using Unity.VisualScripting.FullSerializer.Internal;
   using UnityEditor;
   using UnityEngine;
+  using Debug = System.Diagnostics.Debug;
   using Logger = OdysseyXR.ODK.Services.Logging.Logger;
 
   [InitializeOnLoad]
@@ -185,14 +186,30 @@ namespace Unity.Entities
       sb.AppendLine($"    AddComponent(entity, bakedComponent);");
       sb.AppendLine();
 
-      foreach (var entity in bakingEntities)
+      if (bakingEntities.Any())
       {
-        sb.AppendLine($"    var {entity.BakedName}Entity = CreateAdditionalEntity(TransformUsageFlags.None);");
-        sb.AppendLine($"    AddComponent<PatchEntityReferenceRequestComponent>({entity.BakedName}Entity);");
-        sb.AppendLine($"    AddComponentObject({entity.BakedName}Entity, new PatchEntityReferenceDataComponent() {{");
+        sb.AppendLine($"    var referencedBehaviours = new List<AuthoredBehaviour>() {{");
+        foreach (var entity in bakingEntities)
+        {
+          sb.AppendLine($"      (AuthoredBehaviour)authoring.{entity.AuthoredTypeInfo.Name},");
+        }
+        sb.AppendLine($"    }};");
+        
+        sb.AppendLine($"    var bakedEntityNames = new List<string>() {{");
+        foreach (var entity in bakingEntities)
+        {
+          sb.AppendLine($"      \"{entity.BakedName}\",");
+        }
+        sb.AppendLine($"    }};");
+        
+        sb.AppendLine();
+        sb.AppendLine($"    var patchReferencesEntity = CreateAdditionalEntity(TransformUsageFlags.None);");
+        sb.AppendLine($"    AddComponent<PatchEntityReferenceRequestComponent>(patchReferencesEntity);");
+        sb.AppendLine($"    AddComponentObject(patchReferencesEntity, new PatchEntityReferenceDataComponent() {{");
         sb.AppendLine($"      SourceEntity = entity,");
-        sb.AppendLine($"      ReferencedBehaviour = (AuthoredBehaviour)authoring.{entity.AuthoredTypeInfo.Name},");
-        sb.AppendLine($"      BakedEntityName = \"{entity.BakedName}\",");
+        sb.AppendLine($"      SourceComponent = bakedComponent,");
+        sb.AppendLine($"      ReferencedBehaviours = referencedBehaviours,");
+        sb.AppendLine($"      BakedEntityNames = bakedEntityNames,");
         sb.AppendLine($"    }});");
         sb.AppendLine();
       }
@@ -216,6 +233,7 @@ namespace Unity.Entities
       sb.AppendLine("using Unity.Entities;");
       sb.AppendLine("using Unity.Collections;");
       sb.AppendLine("using OdysseyXR.ODK.Components.ECS;");
+      sb.AppendLine("using Logger = OdysseyXR.ODK.Services.Logging.Logger;");
       foreach (var assembly in namespaces)
         sb.AppendLine($"using {assembly};");
 
@@ -223,49 +241,37 @@ namespace Unity.Entities
       sb.AppendLine($"[WorldSystemFilter(WorldSystemFilterFlags.BakingSystem)]");
       sb.AppendLine($"public partial struct Patch{componentName}EntityReferenceSystem : ISystem");
       sb.AppendLine($"{{");
-      sb.AppendLine($"  private ComponentLookup<{componentName}> _sourceComponentLookup;");
-      sb.AppendLine();
-      sb.AppendLine($"  public void OnCreate(ref SystemState state)");
-      sb.AppendLine($"  {{");
-      sb.AppendLine($"    _sourceComponentLookup = state.GetComponentLookup<{componentName}>();");
-      sb.AppendLine($"  }}");
-      sb.AppendLine();
       sb.AppendLine($"  public void OnUpdate(ref SystemState state)");
       sb.AppendLine($"  {{");
-      sb.AppendLine($"    _sourceComponentLookup.Update(ref state);");
-      sb.AppendLine();
       sb.AppendLine($"    var ecb = new EntityCommandBuffer(Allocator.Temp);");
       sb.AppendLine($"    foreach (var (_, entity) in SystemAPI.Query<RefRO<PatchEntityReferenceRequestComponent>>().WithEntityAccess())");
       sb.AppendLine($"    {{");
-      sb.AppendLine($"      PatchEntityReferenceDataComponent patchEntityRequest;");
-      sb.AppendLine($"      if (state.EntityManager.HasComponent<PatchEntityReferenceDataComponent>(entity))");
+      sb.AppendLine($"      if (!state.EntityManager.HasComponent<PatchEntityReferenceDataComponent>(entity))");
+      sb.AppendLine($"        continue;");
+      sb.AppendLine();
+      sb.AppendLine($"      var patchEntityRequest = state.EntityManager.GetComponentObject<PatchEntityReferenceDataComponent>(entity);");
+      sb.AppendLine($"      var sourceComponent = patchEntityRequest.SourceComponent;");
+      sb.AppendLine($"      var sourceEntity = patchEntityRequest.SourceEntity;");
+      sb.AppendLine($"      var referencedBehaviours = patchEntityRequest.ReferencedBehaviours;");
+      sb.AppendLine($"      var bakedEntityNames = patchEntityRequest.BakedEntityNames;");
+      sb.AppendLine();
+      sb.AppendLine($"      if (!state.EntityManager.HasComponent<{componentName}>(sourceEntity))");
+      sb.AppendLine($"        continue;");
+      sb.AppendLine();
+      sb.AppendLine($"      if (referencedBehaviours.Count != bakedEntityNames.Count)");
       sb.AppendLine($"      {{");
-      sb.AppendLine($"        patchEntityRequest = state.EntityManager.GetComponentObject<PatchEntityReferenceDataComponent>(entity);");
-      sb.AppendLine($"      }}");
-      sb.AppendLine($"      else");
-      sb.AppendLine($"      {{");
+      sb.AppendLine($"        Logger.Error(\"Something went wrong when trying to patch entity references for {componentName}\");");
       sb.AppendLine($"        continue;");
       sb.AppendLine($"      }}");
       sb.AppendLine();
-      sb.AppendLine($"      if (!state.EntityManager.HasComponent<{componentName}>(patchEntityRequest.SourceEntity))");
+      sb.AppendLine($"      for (int i = 0; i < referencedBehaviours.Count; i ++)");
       sb.AppendLine($"      {{");
-      sb.AppendLine($"        continue;");
+      sb.AppendLine($"        var entityField = sourceComponent.GetType().GetField(bakedEntityNames[i]);");
+      sb.AppendLine($"        entityField.SetValue(sourceComponent, referencedBehaviours[i]?.AuthoredEntity ?? null);");
       sb.AppendLine($"      }}");
       sb.AppendLine();
-      sb.AppendLine($"      var sourceComponent = _sourceComponentLookup[patchEntityRequest.SourceEntity];");
-      sb.AppendLine();
-        
-      foreach (var field in bakingEntities)
-      {
-        sb.AppendLine($"      if (patchEntityRequest.BakedEntityName == \"{field.BakedName}\")");
-        sb.AppendLine($"      {{");
-        sb.AppendLine($"        sourceComponent.{field.BakedName} = patchEntityRequest.ReferencedBehaviour.AuthoredEntity;");
-        sb.AppendLine($"      }}");
-        sb.AppendLine();
-      }
-      
-      sb.AppendLine($"      ecb.RemoveComponent<PatchEntityReferenceDataComponent>(entity);");
-      sb.AppendLine($"      ecb.RemoveComponent<PatchEntityReferenceRequestComponent>(entity);");
+      sb.AppendLine($"      ecb.SetComponent(sourceEntity, ({componentName})sourceComponent);");
+      sb.AppendLine($"      ecb.DestroyEntity(entity);");
       sb.AppendLine($"    }}");
       sb.AppendLine($"    ecb.Playback(state.EntityManager);");
       sb.AppendLine($"  }}");
