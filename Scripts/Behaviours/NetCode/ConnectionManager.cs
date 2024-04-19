@@ -9,6 +9,7 @@ namespace OdysseyXR.ODK.Behaviours.NetCode
   using UnityEngine;
   using UnityEngine.SceneManagement;
   using UnityEngine.UI;
+  using Logger = OdysseyXR.ODK.Services.Logging.Logger;
 
   public class ConnectionManager : MonoBehaviour
   {
@@ -48,7 +49,7 @@ namespace OdysseyXR.ODK.Behaviours.NetCode
           StartClient();
           break;
         default:
-          Core.Logging.Logger.Error($"Error: Unknown connection mode {_connectionModeDropdown?.value}");
+          Logger.Error($"Error: Unknown connection mode {_connectionModeDropdown?.value}");
           break;
       }
     }

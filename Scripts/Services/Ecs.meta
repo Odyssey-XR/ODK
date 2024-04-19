@@ -1,0 +1,12 @@
+fileFormatVersion: 2
+<<<<<<<< HEAD:Prefabs.meta
+guid: db298d377cc6d2044a6e957169409778
+========
+guid: da181ddbb08d5a24cbfd46c972693fc6
+>>>>>>>> develop:Services/Ecs.meta
+folderAsset: yes
+DefaultImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -4,6 +4,7 @@ namespace OdysseyXR.ODK.Systems.NetCode
 {
   using OdysseyXR.ODK.Commands.NetCode;
   using OdysseyXR.ODK.Components.Player;
+  using OdysseyXR.ODK.Services.Logging;
   using Unity.Burst;
   using Unity.Collections;
   using Unity.Entities;
@@ -47,7 +48,7 @@ namespace OdysseyXR.ODK.Systems.NetCode
         );
 
         var networkId = _networkIdComponentLookup[receivedRpc.ValueRO.SourceConnection];
-        Core.Logging.Logger.Log($"`{worldName}` setting connection `{networkId.Value}` to in game");
+        Logger.Log($"`{worldName}` setting connection `{networkId.Value}` to in game");
 
         // Create a new player entity spawning request
         var playerEntity = entityCommandBuffer.CreateEntity();

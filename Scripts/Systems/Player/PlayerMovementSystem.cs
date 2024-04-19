@@ -3,7 +3,7 @@
 namespace Plugins.ODK.Scripts.Systems.Player
 {
   using OdysseyXR.ODK.Components.Player;
-  using OdysseyXR.ODK.Core.Logging;
+  using OdysseyXR.ODK.Services.Logging;
   using Plugins.ODK.Components.XR;
   using Unity.Collections;
   using Unity.Entities;

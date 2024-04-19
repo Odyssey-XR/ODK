@@ -7,7 +7,7 @@ namespace Plugins.ODK.Systems.XR
   using Unity.Entities;
   using Unity.NetCode;
   using UnityEngine;
-  using Logger = OdysseyXR.ODK.Core.Logging.Logger;
+  using Logger = OdysseyXR.ODK.Services.Logging.Logger;
 
   [UpdateInGroup(typeof(GhostInputSystemGroup))]
   [WorldSystemFilter(WorldSystemFilterFlags.ClientSimulation)]
