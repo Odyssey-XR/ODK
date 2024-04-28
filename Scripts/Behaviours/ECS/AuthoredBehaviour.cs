@@ -1,3 +1,5 @@
+#nullable enable
+
 namespace OdysseyXR.ODK.Behaviours.ECS
 {
   using Unity.Entities;
@@ -5,6 +7,6 @@ namespace OdysseyXR.ODK.Behaviours.ECS
 
   public class AuthoredBehaviour : MonoBehaviour
   {
-    public Entity AuthoredEntity;
+    public Entity? AuthoredEntity;
   }
 }

@@ -1,0 +1,66 @@
+{
+    "name": "RightControllerInput",
+    "maps": [
+        {
+            "name": "RightController",
+            "id": "54f02707-cd4d-4d2d-b70c-cf42a92d1a7c",
+            "actions": [
+                {
+                    "name": "Position",
+                    "type": "Value",
+                    "id": "ceccacee-93c5-4016-9a68-b6e2b8081d62",
+                    "expectedControlType": "Vector3",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Rotation",
+                    "type": "Value",
+                    "id": "da0c6896-9f4f-47c1-9ba8-b2c9aed84069",
+                    "expectedControlType": "Quaternion",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "b637bdec-d731-4bd9-88ff-76dca348987d",
+                    "path": "<XRController>{RightHand}/devicePosition",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Position",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7dd39c7c-3303-4512-9a2a-866b66d076cb",
+                    "path": "<XRController>{RightHand}/deviceRotation",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Rotation",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": [
+        {
+            "name": "TrackedDeviceInputScheme",
+            "bindingGroup": "TrackedDeviceInputScheme",
+            "devices": [
+                {
+                    "devicePath": "<XRController>",
+                    "isOptional": false,
+                    "isOR": false
+                }
+            ]
+        }
+    ]
+}

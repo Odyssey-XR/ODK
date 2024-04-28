@@ -1,4 +1,6 @@
-﻿namespace OdysseyXR.ODK.Extensions
+﻿#nullable enable
+
+namespace OdysseyXR.ODK.Extensions
 {
   using System.Collections.Generic;
   using Unity.Entities;

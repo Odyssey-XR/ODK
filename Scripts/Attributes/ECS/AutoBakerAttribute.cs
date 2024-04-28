@@ -7,7 +7,8 @@ namespace OdysseyXR.ODK.Attributes.ECS
   [AttributeUsage(AttributeTargets.Class)]
   public class AutoBakerAttribute : Attribute
   {
-    public Type? ComponentType;
+    public Type?  ComponentType;
+    public Type[] AdditionalComponents = {};
     
     public AutoBakerAttribute(Type? componentType = null)
     {

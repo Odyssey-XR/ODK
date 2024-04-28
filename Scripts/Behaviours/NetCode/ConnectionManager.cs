@@ -18,12 +18,23 @@ namespace OdysseyXR.ODK.Behaviours.NetCode
     [SerializeField] private TMP_InputField? _portField;
     [SerializeField] private Button?         _connectButton;
 
-    public string Address => _addressField?.text ?? "127.0.0.1";
-    public ushort Port    => ushort.Parse(_portField?.text ?? "7979");
+    public string ServerAddress = "127.0.0.1";
+    public string ClientAddress = "192.168.0.9";
+    public ushort Port    = ushort.Parse("7777");
 
     private void OnEnable()
     {
       _connectButton?.onClick.AddListener(OnButtonConnect);
+      
+      #if UNITY_ANDROID && !UNITY_EDITOR
+      _connectionModeDropdown.value = 0;
+      ClientAddress                 = ServerAddress;
+      OnButtonConnect();
+      #elif UNITY_EDITOR
+      _connectionModeDropdown.value = 0;
+      ClientAddress                 = ServerAddress;
+      OnButtonConnect();
+      #endif
     }
 
     private void OnDisable()
@@ -39,8 +50,8 @@ namespace OdysseyXR.ODK.Behaviours.NetCode
       switch (_connectionModeDropdown?.value)
       {
         case 0:
-          StartClient();
           StartServer();
+          StartClient();
           break;
         case 1:
           StartServer();
@@ -71,10 +82,11 @@ namespace OdysseyXR.ODK.Behaviours.NetCode
       var serverWorld = ClientServerBootstrap.CreateServerWorld("ODK Server World");
       World.DefaultGameObjectInjectionWorld = serverWorld;
 
-      var serverEndpoint = NetworkEndpoint.Parse(Address, Port);
+      var serverEndpoint = NetworkEndpoint.AnyIpv4.WithPort(Port);
 
       using var query = serverWorld.EntityManager.CreateEntityQuery(ComponentType.ReadWrite<NetworkStreamDriver>());
       query.GetSingletonRW<NetworkStreamDriver>().ValueRW.Listen(serverEndpoint);
+      Logger.Log("Started server world");
     }
 
     private void StartClient()
@@ -82,10 +94,11 @@ namespace OdysseyXR.ODK.Behaviours.NetCode
       var clientWorld = ClientServerBootstrap.CreateClientWorld("ODK Client World");
       World.DefaultGameObjectInjectionWorld = clientWorld;
 
-      var clientEndpoint = NetworkEndpoint.Parse(Address, Port);
+      var clientEndpoint = NetworkEndpoint.Parse(ClientAddress, Port);
 
       using var query = clientWorld.EntityManager.CreateEntityQuery(ComponentType.ReadWrite<NetworkStreamDriver>());
       query.GetSingletonRW<NetworkStreamDriver>().ValueRW.Connect(clientWorld.EntityManager, clientEndpoint);
+      Logger.Log("Started client world");
     }
   }
 }

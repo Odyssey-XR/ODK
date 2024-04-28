@@ -11,28 +11,28 @@ namespace OdysseyXR.ODK.Services.Logging
   /// </summary>
   public static class Logger
   {
-    public static void Log(params string[] messages)
+    public static void Log(params object[] messages)
     {
       #if UNITY_EDITOR
       Debug.Log(GetMessage(messages));
       #endif
     }
 
-     public static void Warn(params string[] messages)
+     public static void Warn(params object[] messages)
      {
        #if UNITY_EDITOR
        Debug.LogWarning(GetMessage(messages));
        #endif
      }   
     
-    public static void Error(params string[] messages)
+    public static void Error(params object[] messages)
     {
       #if UNITY_EDITOR
       Debug.LogError(GetMessage(messages));
       #endif
     }
 
-    public static string GetMessage(params string[] messages)
+    public static string GetMessage(params object[] messages)
     {
       var stringBuilder = new StringBuilder();
       foreach (var message in messages)

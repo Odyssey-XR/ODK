@@ -1,9 +1,7 @@
-using System.Collections;
-
 #if UNITY_EDITOR
 #nullable enable
 
-namespace Unity.Entities
+namespace OdysseyXR.ODK.Services.ECS
 {
   using System;
   using System.Collections.Generic;
@@ -16,7 +14,6 @@ namespace Unity.Entities
   using Unity.VisualScripting.FullSerializer.Internal;
   using UnityEditor;
   using UnityEngine;
-  using Debug = System.Diagnostics.Debug;
   using Logger = OdysseyXR.ODK.Services.Logging.Logger;
 
   [InitializeOnLoad]
@@ -43,6 +40,8 @@ namespace Unity.Entities
 
     static void CheckForAutoBakerRequests()
     {
+      
+      
       TypeCache.GetTypesDerivedFrom<MonoBehaviour>()
         .Where(t => t.GetCustomAttribute<AutoBakerAttribute>() is not null)
         .ToList()
@@ -51,7 +50,10 @@ namespace Unity.Entities
 
     static void CreateAutoBakerForType(Type authoredType)
     {
-      var autoBakerAttribute = authoredType.GetCustomAttribute<AutoBakerAttribute>();
+      var autoBakerAttribute    = authoredType.GetCustomAttribute<AutoBakerAttribute>();
+      var bakeWithTagsAttribute = authoredType.GetCustomAttribute<BakeWithTagsAttribute>();
+
+      var additionalComponents = bakeWithTagsAttribute?.ComponentTagTypes ?? new Type[] { };
 
       // Get all fields that need to be baked along with all entity references
       var bakingFields = authoredType
@@ -84,7 +86,8 @@ namespace Unity.Entities
         .Concat(bakingEntities)
         .ToList()
         .Select(field => field.AuthoredTypeInfo.FieldType.Namespace)
-        .Concat(new List<string> { authoredType.Namespace });
+        .Concat(new List<string> { authoredType.Namespace })
+        .Concat(additionalComponents.Select(component => component.Namespace));
 
       if (autoBakerAttribute.ComponentType is not null)
         namespaces = namespaces.Concat(new List<string> { autoBakerAttribute.ComponentType.Namespace });
@@ -106,18 +109,9 @@ namespace Unity.Entities
       }
 
       files.Add((
-        GenerateBakerCode(authoredType, componentName, bakingFields, bakingEntities, namespaces),
+        GenerateBakerCode(authoredType, componentName, additionalComponents, bakingFields, bakingEntities, namespaces),
         "Baker"
       ));
-
-
-      if (bakingEntities.Any())
-      {
-        files.Add((
-          GenerateEntityPatchSystem(authoredType, componentName, bakingEntities, namespaces),
-          $"EntityPatchSystem"
-        ));
-      }
       
       foreach (var file in files)
         GenerateFile(authoredType, file.Item1, file.Item2);
@@ -156,6 +150,7 @@ namespace Unity.Entities
     static string GenerateBakerCode(
       Type authoredType,
       string componentName,
+      Type[] additionalComponents,
       IEnumerable<BakedPropertyData> bakingFields,
       IEnumerable<BakedPropertyData> bakingEntities,
       IEnumerable<string> namespaces)
@@ -175,106 +170,32 @@ namespace Unity.Entities
       sb.AppendLine($"{{");
       sb.AppendLine($"  public override void Bake({authoredType.Name} authoring)");
       sb.AppendLine($"  {{");
-      sb.AppendLine($"    var entity = GetEntity(TransformUsageFlags.None);");
+      sb.AppendLine($"    var entity = GetEntity(TransformUsageFlags.Dynamic);");
+
+      foreach (var component in additionalComponents)
+      {
+        sb.AppendLine($"    AddComponent<{component.Name}>(entity);");
+      }
+      
       sb.AppendLine($"    var bakedComponent = new {componentName}() {{");
 
       foreach (var field in bakingFields)
         sb.AppendLine($"      {field.BakedName} = authoring.{field.AuthoredTypeInfo.Name},");
+      
+      foreach (var field in bakingEntities)
+        sb.AppendLine($"      {field.BakedName} = GetEntity(authoring.{field.AuthoredTypeInfo.Name}, TransformUsageFlags.Dynamic),");
 
       sb.AppendLine($"    }};");
       sb.AppendLine();
       sb.AppendLine($"    AddComponent(entity, bakedComponent);");
       sb.AppendLine();
 
-      if (bakingEntities.Any())
-      {
-        sb.AppendLine($"    var referencedBehaviours = new List<AuthoredBehaviour>() {{");
-        foreach (var entity in bakingEntities)
-        {
-          sb.AppendLine($"      (AuthoredBehaviour)authoring.{entity.AuthoredTypeInfo.Name},");
-        }
-        sb.AppendLine($"    }};");
-        
-        sb.AppendLine($"    var bakedEntityNames = new List<string>() {{");
-        foreach (var entity in bakingEntities)
-        {
-          sb.AppendLine($"      \"{entity.BakedName}\",");
-        }
-        sb.AppendLine($"    }};");
-        
-        sb.AppendLine();
-        sb.AppendLine($"    var patchReferencesEntity = CreateAdditionalEntity(TransformUsageFlags.None);");
-        sb.AppendLine($"    AddComponent<PatchEntityReferenceRequestComponent>(patchReferencesEntity);");
-        sb.AppendLine($"    AddComponentObject(patchReferencesEntity, new PatchEntityReferenceDataComponent() {{");
-        sb.AppendLine($"      SourceEntity = entity,");
-        sb.AppendLine($"      SourceComponent = bakedComponent,");
-        sb.AppendLine($"      ReferencedBehaviours = referencedBehaviours,");
-        sb.AppendLine($"      BakedEntityNames = bakedEntityNames,");
-        sb.AppendLine($"    }});");
-        sb.AppendLine();
-      }
-
       if (authoredType.IsSubclassOf(typeof(AuthoredBehaviour)))
         sb.AppendLine("    authoring.AuthoredEntity = entity;");
+      sb.AppendLine("    BakeEntity(authoring);");
       sb.AppendLine($"  }}");
-      sb.AppendLine($"}}");
-
-      return sb.ToString();
-    }
-
-    static string GenerateEntityPatchSystem(
-      Type authoredType,
-      string componentName,
-      IEnumerable<BakedPropertyData> bakingEntities,
-      IEnumerable<string> namespaces)
-    {
-      var sb = new StringBuilder();
-
-      sb.AppendLine("using Unity.Entities;");
-      sb.AppendLine("using Unity.Collections;");
-      sb.AppendLine("using OdysseyXR.ODK.Components.ECS;");
-      sb.AppendLine("using Logger = OdysseyXR.ODK.Services.Logging.Logger;");
-      foreach (var assembly in namespaces)
-        sb.AppendLine($"using {assembly};");
-
       sb.AppendLine();
-      sb.AppendLine($"[WorldSystemFilter(WorldSystemFilterFlags.BakingSystem)]");
-      sb.AppendLine($"public partial struct Patch{componentName}EntityReferenceSystem : ISystem");
-      sb.AppendLine($"{{");
-      sb.AppendLine($"  public void OnUpdate(ref SystemState state)");
-      sb.AppendLine($"  {{");
-      sb.AppendLine($"    var ecb = new EntityCommandBuffer(Allocator.Temp);");
-      sb.AppendLine($"    foreach (var (_, entity) in SystemAPI.Query<RefRO<PatchEntityReferenceRequestComponent>>().WithEntityAccess())");
-      sb.AppendLine($"    {{");
-      sb.AppendLine($"      if (!state.EntityManager.HasComponent<PatchEntityReferenceDataComponent>(entity))");
-      sb.AppendLine($"        continue;");
-      sb.AppendLine();
-      sb.AppendLine($"      var patchEntityRequest = state.EntityManager.GetComponentObject<PatchEntityReferenceDataComponent>(entity);");
-      sb.AppendLine($"      var sourceComponent = patchEntityRequest.SourceComponent;");
-      sb.AppendLine($"      var sourceEntity = patchEntityRequest.SourceEntity;");
-      sb.AppendLine($"      var referencedBehaviours = patchEntityRequest.ReferencedBehaviours;");
-      sb.AppendLine($"      var bakedEntityNames = patchEntityRequest.BakedEntityNames;");
-      sb.AppendLine();
-      sb.AppendLine($"      if (!state.EntityManager.HasComponent<{componentName}>(sourceEntity))");
-      sb.AppendLine($"        continue;");
-      sb.AppendLine();
-      sb.AppendLine($"      if (referencedBehaviours.Count != bakedEntityNames.Count)");
-      sb.AppendLine($"      {{");
-      sb.AppendLine($"        Logger.Error(\"Something went wrong when trying to patch entity references for {componentName}\");");
-      sb.AppendLine($"        continue;");
-      sb.AppendLine($"      }}");
-      sb.AppendLine();
-      sb.AppendLine($"      for (int i = 0; i < referencedBehaviours.Count; i ++)");
-      sb.AppendLine($"      {{");
-      sb.AppendLine($"        var entityField = sourceComponent.GetType().GetField(bakedEntityNames[i]);");
-      sb.AppendLine($"        entityField.SetValue(sourceComponent, referencedBehaviours[i]?.AuthoredEntity ?? null);");
-      sb.AppendLine($"      }}");
-      sb.AppendLine();
-      sb.AppendLine($"      ecb.SetComponent(sourceEntity, ({componentName})sourceComponent);");
-      sb.AppendLine($"      ecb.DestroyEntity(entity);");
-      sb.AppendLine($"    }}");
-      sb.AppendLine($"    ecb.Playback(state.EntityManager);");
-      sb.AppendLine($"  }}");
+      sb.AppendLine($"  partial void BakeEntity({authoredType.Name} authoring);");
       sb.AppendLine($"}}");
 
       return sb.ToString();
