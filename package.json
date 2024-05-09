@@ -1,0 +1,21 @@
+{
+  "name": "com.odysseyxr.odk",
+  "version": "0.0.1",
+  "displayName": "Odyssey Development Kit",
+  "description": "Development kit for OdysseyXR applications",
+  "unity": "2022.3",
+  "unityRelease": "",
+  "documentationUrl": "",
+  "changelogUrl": "",
+  "licensesUrl": "",
+  "dependencies": {
+    "com.unity.netcode.gameobjects": "1.8.1"
+  },
+  "keywords": [
+  ],
+  "author": {
+    "name": "OdysseyXR",
+    "email": "admin@odyssey-xr.com",
+    "url": ""
+  }
+}
