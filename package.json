@@ -9,7 +9,9 @@
   "changelogUrl": "",
   "licensesUrl": "",
   "dependencies": {
-    "com.unity.netcode.gameobjects": "1.8.1"
+    "com.unity.netcode.gameobjects": "1.8.1",
+    "com.unity.inputsystem": "1.7.0",
+    "com.unity.xr.openxr": "1.10.0"
   },
   "keywords": [
   ],

@@ -1,4 +1,4 @@
-namespace ODK.GameObjects
+namespace ODK.Shared.Core
 {
   using UnityEngine;
 
