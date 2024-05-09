@@ -4,7 +4,7 @@ namespace ODK.GameObjects
 
   public class DevelopmentKitVersioning : MonoBehaviour
   {
-    public const Version = "0.0.1";
+    public const string Version = "0.0.1";
     
   	public void Awake()
     {
