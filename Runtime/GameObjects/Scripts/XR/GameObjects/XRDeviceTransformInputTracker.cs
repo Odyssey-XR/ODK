@@ -2,6 +2,7 @@
 
 namespace ODK.GameObjects.XR
 {
+  using System;
   using ODK.Shared.Transforms;
   using Unity.Netcode;
   using UnityEngine;
@@ -88,12 +89,34 @@ namespace ODK.GameObjects.XR
     }
 
     /// <summary>
+    /// Unity's on enable function
+    /// </summary>
+    protected virtual void OnEnable()
+    {
+      _positionInputAction.Enable();
+      _rotationInputAction.Enable();
+    }
+
+    /// <summary>
+    /// Unity's on disable event function
+    /// </summary>
+    protected virtual void OnDisable()
+    {
+      _positionInputAction.Disable();
+      _rotationInputAction.Disable();
+    }
+
+    /// <summary>
     /// Unity's update event function
     /// </summary>
     protected virtual void Update()
     {
       SetPosition(_positionInputAction?.ReadValue<Vector3>() ?? Vector3.zero);
       SetRotation(_rotationInputAction?.ReadValue<Quaternion>() ?? Quaternion.identity);
+
+      Debug.Log(_positionInputAction.ReadValue<Vector3>());
+      Debug.Log(_rotationInputAction.ReadValue<Quaternion>());
+      Debug.Log("");
     }
   }
 }

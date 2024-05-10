@@ -29,6 +29,18 @@ namespace ODK.Shared.Scripts.Behaviours.Transforms
     protected OwnerNetworkTransform SourceNetworkTransform = null!;
 
     /// <summary>
+    /// Flag to enable and disable tracking of position
+    /// </summary>
+    [SerializeField]
+    public bool TrackPosition = true;
+
+    /// <summary>
+    /// Flag to enable and disable tracking of rotation 
+    /// </summary>
+    [SerializeField]
+    public bool TrackRotation = true;
+
+    /// <summary>
     /// Unity's Awake event function
     /// </summary>
     protected virtual void Awake()
@@ -44,8 +56,13 @@ namespace ODK.Shared.Scripts.Behaviours.Transforms
     /// </summary>
     protected void Update()
     {
-      SourceNetworkTransform.transform.position = TargetTransform?.Position ?? Vector3.zero;
-      SourceNetworkTransform.transform.rotation = TargetTransform?.Rotation ?? Quaternion.identity;
+      if (TrackPosition)
+        SourceNetworkTransform.transform.localPosition = TargetTransform?.Position ?? Vector3.zero;
+      
+      if (TrackRotation)
+        SourceNetworkTransform.transform.localRotation = TargetTransform?.Rotation ?? Quaternion.identity;
+
+      
     }
   }
 }
