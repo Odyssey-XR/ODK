@@ -1,6 +1,6 @@
 #nullable enable
 
-namespace ODK.Shared.Scripts.Behaviours.Transforms
+namespace ODK.Shared.Behaviours
 {
   using ODK.Shared.Transforms;
   using Unity.Netcode;
@@ -61,8 +61,6 @@ namespace ODK.Shared.Scripts.Behaviours.Transforms
       
       if (TrackRotation)
         SourceNetworkTransform.transform.localRotation = TargetTransform?.Rotation ?? Quaternion.identity;
-
-      
     }
   }
 }

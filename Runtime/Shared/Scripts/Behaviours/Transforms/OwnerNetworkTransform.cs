@@ -1,4 +1,4 @@
-namespace ODK.Shared.Transforms
+namespace ODK.Shared.Behaviours
 {
   using Unity.Netcode.Components;
   using UnityEngine;

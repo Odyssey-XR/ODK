@@ -2,7 +2,6 @@
 
 namespace ODK.GameObjects.XR
 {
-  using System;
   using ODK.Shared.Transforms;
   using Unity.Netcode;
   using UnityEngine;
@@ -18,13 +17,13 @@ namespace ODK.GameObjects.XR
     /// Input action for reading the XR devices position
     /// </summary>
     [SerializeField]
-    private InputAction? _positionInputAction;
+    protected InputAction? _positionInputAction;
 
     /// <summary>
     /// Input action for reading the XR devices rotation
     /// </summary>
     [SerializeField]
-    private InputAction? _rotationInputAction;
+    protected InputAction? _rotationInputAction;
 
     /// <summary>
     /// Networked variable for syncing the position input
@@ -35,16 +34,6 @@ namespace ODK.GameObjects.XR
     /// Networked variable for syncing the rotation input
     /// </summary>
     protected NetworkVariable<Quaternion> _rotation = new(Quaternion.identity);
-
-    /// <summary>
-    /// Gets the <see cref="_positionInputAction"/>
-    /// </summary>
-    public InputAction? PositionInputAction => _positionInputAction;
-
-    /// <summary>
-    /// Gets the <see cref="_rotationInputAction"/>
-    /// </summary>
-    public InputAction? RotationInputAction => _rotationInputAction;
 
     /// <inheritdoc />
     public Vector3 Position
@@ -93,8 +82,8 @@ namespace ODK.GameObjects.XR
     /// </summary>
     protected virtual void OnEnable()
     {
-      _positionInputAction.Enable();
-      _rotationInputAction.Enable();
+      _positionInputAction?.Enable();
+      _rotationInputAction?.Enable();
     }
 
     /// <summary>
@@ -102,8 +91,8 @@ namespace ODK.GameObjects.XR
     /// </summary>
     protected virtual void OnDisable()
     {
-      _positionInputAction.Disable();
-      _rotationInputAction.Disable();
+      _positionInputAction?.Disable();
+      _rotationInputAction?.Disable();
     }
 
     /// <summary>
@@ -113,10 +102,6 @@ namespace ODK.GameObjects.XR
     {
       SetPosition(_positionInputAction?.ReadValue<Vector3>() ?? Vector3.zero);
       SetRotation(_rotationInputAction?.ReadValue<Quaternion>() ?? Quaternion.identity);
-
-      Debug.Log(_positionInputAction.ReadValue<Vector3>());
-      Debug.Log(_rotationInputAction.ReadValue<Quaternion>());
-      Debug.Log("");
     }
   }
 }
