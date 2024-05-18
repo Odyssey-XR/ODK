@@ -40,9 +40,7 @@ namespace ODK.Shared.Behaviours
     [SerializeField]
     public bool TrackRotation = true;
 
-    /// <summary>
-    /// Unity's Awake event function
-    /// </summary>
+    /// <inheritdoc cref="MonoBehaviour"/>
     protected virtual void Awake()
     {
       if (TargetTransform is null)
@@ -51,9 +49,7 @@ namespace ODK.Shared.Behaviours
       SourceNetworkTransform = GetComponent<OwnerNetworkTransform>();
     }
 
-    /// <summary>
-    /// Unity's Awake event function
-    /// </summary>
+    /// <inheritdoc cref="MonoBehaviour"/>
     protected void Update()
     {
       if (TrackPosition)

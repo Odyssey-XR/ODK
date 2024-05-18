@@ -77,27 +77,21 @@ namespace ODK.GameObjects.XR
       _rotation.Value = value;
     }
 
-    /// <summary>
-    /// Unity's on enable function
-    /// </summary>
+    /// <inheritdoc cref="MonoBehaviour"/>
     protected virtual void OnEnable()
     {
       _positionInputAction?.Enable();
       _rotationInputAction?.Enable();
     }
 
-    /// <summary>
-    /// Unity's on disable event function
-    /// </summary>
+    /// <inheritdoc cref="MonoBehaviour"/>
     protected virtual void OnDisable()
     {
       _positionInputAction?.Disable();
       _rotationInputAction?.Disable();
     }
 
-    /// <summary>
-    /// Unity's update event function
-    /// </summary>
+    /// <inheritdoc cref="MonoBehaviour"/>
     protected virtual void Update()
     {
       SetPosition(_positionInputAction?.ReadValue<Vector3>() ?? Vector3.zero);

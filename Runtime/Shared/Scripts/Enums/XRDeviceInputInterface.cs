@@ -2,6 +2,9 @@ namespace ODK.Shared.Enums
 {
   using System;
 
+  /// <summary>
+  /// The input interfaces available on an XR device.
+  /// </summary>
   [Flags]
   public enum XRDeviceInputInterface
   {
