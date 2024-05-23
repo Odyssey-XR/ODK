@@ -330,16 +330,12 @@ namespace ODK.GameObjects.XR
     /// <inheritdoc />
     public void Connect(Action<IXRInput> listener)
     {
-      if (IsOwner)
-        _listenerStack.Push(listener);
+      _listenerStack.Push(listener);
     }
 
     /// <inheritdoc />
     public void Disconnect(Action<IXRInput> listener)
     {
-      if (!IsOwner)
-        return;
-      
       Stack<Action<IXRInput>> newStack = new();
       foreach (Action<IXRInput> action in _listenerStack)
       {
