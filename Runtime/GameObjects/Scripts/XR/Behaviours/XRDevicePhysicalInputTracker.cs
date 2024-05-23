@@ -173,27 +173,19 @@ namespace ODK.GameObjects.XR
       _gripValue.Value       = 0;
       _thumbstickValue.Value = Vector2.zero;
 
-      SetInput(_pressedInputs, XRDeviceInputInterface.PrimaryButton,
-        _primaryButtonPressedAction?.ReadValue<float>() > 0 ? 1 : 0);
-      SetInput(_pressedInputs, XRDeviceInputInterface.SecondaryButton,
-        _secondaryButtonPressedAction?.ReadValue<float>() > 0 ? 1 : 0);
-      SetInput(_pressedInputs, XRDeviceInputInterface.MenuButton,
-        _menuButtonPressedAction?.ReadValue<float>() > 0 ? 1 : 0);
+      SetInput(_pressedInputs, XRDeviceInputInterface.PrimaryButton, _primaryButtonPressedAction?.ReadValue<float>() > 0 ? 1 : 0);
+      SetInput(_pressedInputs, XRDeviceInputInterface.SecondaryButton, _secondaryButtonPressedAction?.ReadValue<float>() > 0 ? 1 : 0);
+      SetInput(_pressedInputs, XRDeviceInputInterface.MenuButton, _menuButtonPressedAction?.ReadValue<float>() > 0 ? 1 : 0);
       SetInput(_pressedInputs, XRDeviceInputInterface.Trigger, _triggerValueAction?.ReadValue<float>() > 0 ? 1 : 0);
       SetInput(_pressedInputs, XRDeviceInputInterface.Grip, _gripValueAction?.ReadValue<float>() > 0 ? 1 : 0);
-      SetInput(_pressedInputs, XRDeviceInputInterface.Thumbstick,
-        _thumbstickPressedAction?.ReadValue<float>() > 0 ? 1 : 0);
+      SetInput(_pressedInputs, XRDeviceInputInterface.Thumbstick, _thumbstickPressedAction?.ReadValue<float>() > 0 ? 1 : 0);
 
-      SetInput(_touchedInputs, XRDeviceInputInterface.PrimaryButton,
-        _primaryButtonTouchedAction?.ReadValue<float>() > 0 ? 1 : 0);
-      SetInput(_touchedInputs, XRDeviceInputInterface.SecondaryButton,
-        _secondaryButtonTouchedAction?.ReadValue<float>() > 0 ? 1 : 0);
-      SetInput(_touchedInputs, XRDeviceInputInterface.MenuButton,
-        _menuButtonTouchedAction?.ReadValue<float>() > 0 ? 1 : 0);
+      SetInput(_touchedInputs, XRDeviceInputInterface.PrimaryButton, _primaryButtonTouchedAction?.ReadValue<float>() > 0 ? 1 : 0);
+      SetInput(_touchedInputs, XRDeviceInputInterface.SecondaryButton, _secondaryButtonTouchedAction?.ReadValue<float>() > 0 ? 1 : 0);
+      SetInput(_touchedInputs, XRDeviceInputInterface.MenuButton, _menuButtonTouchedAction?.ReadValue<float>() > 0 ? 1 : 0);
       SetInput(_touchedInputs, XRDeviceInputInterface.Trigger, _triggerTouchedAction?.ReadValue<float>() > 0 ? 1 : 0);
       SetInput(_touchedInputs, XRDeviceInputInterface.Grip, _gripTouchedAction?.ReadValue<float>() > 0 ? 1 : 0);
-      SetInput(_touchedInputs, XRDeviceInputInterface.Thumbstick,
-        _thumbstickTouchedAction?.ReadValue<float>() > 0 ? 1 : 0);
+      SetInput(_touchedInputs, XRDeviceInputInterface.Thumbstick, _thumbstickTouchedAction?.ReadValue<float>() > 0 ? 1 : 0);
 
       _triggerValue.Value    = _triggerValueAction?.ReadValue<float>() ?? 0;
       _gripValue.Value       = _gripValueAction?.ReadValue<float>() ?? 0;
