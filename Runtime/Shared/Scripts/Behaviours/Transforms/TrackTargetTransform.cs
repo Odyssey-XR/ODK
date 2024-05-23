@@ -20,7 +20,7 @@ namespace ODK.Shared.Transforms
     /// <summary>
     /// The target object resolved to an <see cref="ITransform"/>
     /// </summary>
-    protected ITransform? TargetTransform => _targetTransform as ITransform;
+    public ITransform? TargetTransform => _targetTransform as ITransform;
 
     /// <summary>
     /// Flag to enable and disable tracking of position
@@ -38,7 +38,7 @@ namespace ODK.Shared.Transforms
     protected virtual void Awake()
     {
       if (TargetTransform is null)
-        Debug.LogError("target transform field must resolver to an ITransform interface");
+        Debug.LogError("target transform field must resolve to an ITransform interface");
     }
 
     /// <inheritdoc cref="MonoBehaviour"/>

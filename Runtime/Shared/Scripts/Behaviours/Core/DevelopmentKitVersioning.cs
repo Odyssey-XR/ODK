@@ -11,11 +11,11 @@ namespace ODK.Shared.Core
     /// The version of the ODK package.
     /// </summary>
     public const string Version = "0.0.1";
-    
+
     /// <inheritdoc cref="MonoBehaviour"/>
-  	public void Awake()
+    public void Awake()
     {
       Debug.Log($"Using ODK version - {Version}");
-    }	
+    }
   }
 }
