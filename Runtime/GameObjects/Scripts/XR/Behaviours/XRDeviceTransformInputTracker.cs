@@ -28,12 +28,12 @@ namespace ODK.GameObjects.XR
     /// <summary>
     /// Networked variable for syncing the position input
     /// </summary>
-    protected NetworkVariable<Vector3> _position = new(Vector3.zero);
+    protected NetworkVariable<Vector3> _position = new(Vector3.zero, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
     /// <summary>
     /// Networked variable for syncing the rotation input
     /// </summary>
-    protected NetworkVariable<Quaternion> _rotation = new(Quaternion.identity);
+    protected NetworkVariable<Quaternion> _rotation = new(Quaternion.identity, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
     /// <inheritdoc />
     public Vector3 Position
@@ -57,7 +57,7 @@ namespace ODK.GameObjects.XR
     /// </param>
     protected void SetPosition(Vector3 value)
     {
-      if (!IsServer && !IsOwner)
+      if (!IsOwner)
         return;
 
       _position.Value = value;
@@ -71,7 +71,7 @@ namespace ODK.GameObjects.XR
     /// </param>
     protected void SetRotation(Quaternion value)
     {
-      if (!IsServer && !IsOwner)
+      if (!IsOwner)
         return;
 
       _rotation.Value = value;

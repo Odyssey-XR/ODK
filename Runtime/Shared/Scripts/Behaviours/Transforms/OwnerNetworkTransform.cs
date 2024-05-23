@@ -1,4 +1,4 @@
-namespace ODK.Shared.Behaviours
+namespace ODK.Shared.Transforms
 {
   using Unity.Netcode.Components;
   using UnityEngine;
@@ -13,7 +13,7 @@ namespace ODK.Shared.Behaviours
     /// <inheritdoc />
     protected override bool OnIsServerAuthoritative()
     {
-      return IsServer || IsOwner;
+      return false;
     }
   }
 }

@@ -1,4 +1,4 @@
-namespace ODK.Shared.Behaviours
+namespace ODK.Shared.Core
 {
   using UnityEngine;
 

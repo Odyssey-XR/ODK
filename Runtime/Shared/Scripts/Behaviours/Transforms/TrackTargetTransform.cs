@@ -1,8 +1,7 @@
 #nullable enable
 
-namespace ODK.Shared.Behaviours
+namespace ODK.Shared.Transforms
 {
-  using ODK.Shared.Transforms;
   using Unity.Netcode;
   using UnityEngine;
 
@@ -24,11 +23,6 @@ namespace ODK.Shared.Behaviours
     protected ITransform? TargetTransform => _targetTransform as ITransform;
 
     /// <summary>
-    /// The owner's network transform
-    /// </summary>
-    protected OwnerNetworkTransform SourceNetworkTransform = null!;
-
-    /// <summary>
     /// Flag to enable and disable tracking of position
     /// </summary>
     [SerializeField]
@@ -45,18 +39,27 @@ namespace ODK.Shared.Behaviours
     {
       if (TargetTransform is null)
         Debug.LogError("target transform field must resolver to an ITransform interface");
-
-      SourceNetworkTransform = GetComponent<OwnerNetworkTransform>();
     }
 
     /// <inheritdoc cref="MonoBehaviour"/>
     protected void Update()
     {
+      if (!IsOwner)
+        return;
+
+      UpdateTransform(
+        TargetTransform?.Position ?? Vector3.zero,
+        TargetTransform?.Rotation ?? Quaternion.identity
+      );
+    }
+    
+    protected virtual void UpdateTransform(Vector3 targetPosition, Quaternion targetRotation)
+    {
       if (TrackPosition)
-        SourceNetworkTransform.transform.localPosition = TargetTransform?.Position ?? Vector3.zero;
+        transform.localPosition = targetPosition;
       
       if (TrackRotation)
-        SourceNetworkTransform.transform.localRotation = TargetTransform?.Rotation ?? Quaternion.identity;
+        transform.localRotation = targetRotation;
     }
   }
 }

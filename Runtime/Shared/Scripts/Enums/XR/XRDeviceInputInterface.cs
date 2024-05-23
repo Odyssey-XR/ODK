@@ -1,4 +1,4 @@
-namespace ODK.Shared.Enums
+namespace ODK.Shared.XR
 {
   using System;
 
