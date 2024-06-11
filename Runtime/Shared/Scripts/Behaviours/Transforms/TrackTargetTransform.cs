@@ -44,20 +44,20 @@ namespace ODK.Shared.Transforms
     /// <inheritdoc cref="MonoBehaviour"/>
     protected void Update()
     {
-      if (!IsOwner)
-        return;
-
-      UpdateTransform(
+      UpdateTransform_Owner(
         TargetTransform?.Position ?? Vector3.zero,
         TargetTransform?.Rotation ?? Quaternion.identity
       );
     }
-    
-    protected virtual void UpdateTransform(Vector3 targetPosition, Quaternion targetRotation)
+
+    protected virtual void UpdateTransform_Owner(Vector3 targetPosition, Quaternion targetRotation)
     {
+      if (!IsOwner)
+        return;
+
       if (TrackPosition)
         transform.localPosition = targetPosition;
-      
+
       if (TrackRotation)
         transform.localRotation = targetRotation;
     }

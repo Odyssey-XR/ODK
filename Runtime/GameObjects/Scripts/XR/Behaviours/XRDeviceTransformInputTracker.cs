@@ -28,25 +28,27 @@ namespace ODK.GameObjects.XR
     /// <summary>
     /// Networked variable for syncing the position input
     /// </summary>
-    protected NetworkVariable<Vector3> _position = new(Vector3.zero, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+    protected NetworkVariable<Vector3> _position = new(Vector3.zero, NetworkVariableReadPermission.Everyone,
+      NetworkVariableWritePermission.Owner);
 
     /// <summary>
     /// Networked variable for syncing the rotation input
     /// </summary>
-    protected NetworkVariable<Quaternion> _rotation = new(Quaternion.identity, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+    protected NetworkVariable<Quaternion> _rotation = new(Quaternion.identity, NetworkVariableReadPermission.Everyone,
+      NetworkVariableWritePermission.Owner);
 
     /// <inheritdoc />
     public Vector3 Position
     {
       get => _position.Value;
-      set => SetPosition(value);
+      set => SetPosition_Owner(value);
     }
 
     /// <inheritdoc />
     public Quaternion Rotation
     {
       get => _rotation.Value;
-      set => SetRotation(value);
+      set => SetRotation_Owner(value);
     }
 
     /// <summary>
@@ -55,7 +57,7 @@ namespace ODK.GameObjects.XR
     /// <param name="value">
     /// The new <see cref="Vector3"/> position value
     /// </param>
-    protected void SetPosition(Vector3 value)
+    protected void SetPosition_Owner(Vector3 value)
     {
       if (!IsOwner)
         return;
@@ -69,7 +71,7 @@ namespace ODK.GameObjects.XR
     /// <param name="value">
     /// The new <see cref="Quaternion"/> rotation value
     /// </param>
-    protected void SetRotation(Quaternion value)
+    protected void SetRotation_Owner(Quaternion value)
     {
       if (!IsOwner)
         return;
@@ -78,15 +80,21 @@ namespace ODK.GameObjects.XR
     }
 
     /// <inheritdoc cref="MonoBehaviour"/>
-    protected virtual void OnEnable()
+    public override void OnNetworkSpawn()
     {
+      if (!IsHost && !IsClient)
+        return;
+      
       _positionInputAction?.Enable();
       _rotationInputAction?.Enable();
     }
 
     /// <inheritdoc cref="MonoBehaviour"/>
-    protected virtual void OnDisable()
+    public override void OnNetworkDespawn()
     {
+      if (!IsHost && !IsClient)
+        return;
+      
       _positionInputAction?.Disable();
       _rotationInputAction?.Disable();
     }
@@ -94,8 +102,8 @@ namespace ODK.GameObjects.XR
     /// <inheritdoc cref="MonoBehaviour"/>
     protected virtual void Update()
     {
-      SetPosition(_positionInputAction?.ReadValue<Vector3>() ?? Vector3.zero);
-      SetRotation(_rotationInputAction?.ReadValue<Quaternion>() ?? Quaternion.identity);
+      SetPosition_Owner(_positionInputAction?.ReadValue<Vector3>() ?? Vector3.zero);
+      SetRotation_Owner(_rotationInputAction?.ReadValue<Quaternion>() ?? Quaternion.identity);
     }
   }
 }

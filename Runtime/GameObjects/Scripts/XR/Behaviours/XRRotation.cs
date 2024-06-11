@@ -2,8 +2,9 @@
 
 namespace ODK.GameObjects.XR
 {
+  using ODK.Shared.Input;
   using ODK.Shared.Transforms;
-  using ODK.Shared.XR;
+  using ODK.Shared.Player;
   using Unity.Netcode;
   using UnityEngine;
 
@@ -33,56 +34,51 @@ namespace ODK.GameObjects.XR
     [SerializeField]
     private MonoBehaviour? _inputTracker;
 
+    private InputCommand _onInputAction;
+
     /// <summary>
     /// The <see cref="ILocomotionService"/>
     /// </summary>
     protected ILocomotionService _locomotionService = null!;
 
     /// <summary>
-    /// The <see cref="IXRInputEventer"/>
+    /// The <see cref="IInputEventer"/>
     /// </summary>
-    protected IXRInputEventer? _inputEventer;
+    protected IInputEventer? _inputEventer;
 
     /// <inheritdoc cref="MonoBehaviour"/>
-    protected virtual void Awake()
+    public override void OnNetworkSpawn()
     {
+      if (!IsServer)
+        return;
+
       _locomotionService = new DefaultLocomotionService();
 
-      _inputEventer = _inputTracker as IXRInputEventer;
+      _inputEventer = _inputTracker as IInputEventer;
       if (_inputEventer is null)
         Debug.LogError("Input tracker must be able to resolve to an IXRInputEventer interface");
 
-      _inputEventer?.Connect(OnInput);
+      _onInputAction = new InputCommand(OnInput_Server);
+      _inputEventer?.Connect_Server(_onInputAction);
     }
 
     /// <summary>
     /// Event listener for XR input actions
     /// </summary>
-    /// <param name="input">
-    /// A <see cref="IXRInput"/>
+    /// <param name="inputEvent">
+    /// A <see cref="IInputEvent"/>
     /// </param>
-    protected virtual void OnInput(IXRInput input)
+    protected virtual void OnInput_Server(IInputEvent inputEvent)
     {
-      if (_playerRoot is null || !IsOwner)
+      if (_playerRoot is null || !IsServer)
         return;
 
-      Vector2 direction = input.ThumbstickValue();
+      Vector2 direction = inputEvent.ThumbstickValue_Authority();
       if (direction.x == 0)
         return;
 
-      Quaternion rotationDelta = _locomotionService.CalculateGroundRotationDelta(direction.x);
-      SetPlayerRotation(rotationDelta);
-    }
-
-    /// <summary>
-    /// Sets the player's rotation
-    /// </summary>
-    /// <param name="rotationDelta">
-    /// The delta in rotation the player will rotate
-    /// </param>
-    protected virtual void SetPlayerRotation(Quaternion rotationDelta)
-    {
-      _playerRoot!.transform.rotation *= Quaternion.Euler(rotationDelta.eulerAngles * _speed);
+      Quaternion rotationDelta = _locomotionService.CalculateGroundRotationDelta(direction.x, _speed);
+      _playerRoot!.transform.rotation *= rotationDelta;
     }
   }
 }

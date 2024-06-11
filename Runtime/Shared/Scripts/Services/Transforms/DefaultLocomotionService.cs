@@ -12,7 +12,7 @@ namespace ODK.Shared.Transforms
   public struct DefaultLocomotionService : ILocomotionService
   {
     /// <inheritdoc />
-    public Vector3 CalculateGroundPositionDelta(Vector2 direction, Transform? lookDirection)
+    public Vector3 CalculateGroundPositionDelta(Vector2 direction, Transform? lookDirection, float speed)
     {
       Vector3 forward  = lookDirection?.forward ?? Vector3.one;
       Vector3 right    = lookDirection?.right ?? Vector3.one;
@@ -20,14 +20,14 @@ namespace ODK.Shared.Transforms
 
       movement.y = 0;
 
-      return movement.normalized * Time.deltaTime;
+      return movement.normalized * speed * Time.deltaTime;
     }
 
     /// <inheritdoc />
-    public Quaternion CalculateGroundRotationDelta(float direction)
+    public Quaternion CalculateGroundRotationDelta(float direction, float speed)
     {
       Vector3 rotation = new(0, direction, 0);
-      return Quaternion.Euler(rotation * Time.deltaTime);
+      return Quaternion.Euler(rotation * speed * Time.deltaTime);
     }
   }
 }

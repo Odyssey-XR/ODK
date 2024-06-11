@@ -1,11 +1,12 @@
-namespace ODK.Shared.XR
+namespace ODK.Shared.Player
 {
   using System;
+  using ODK.Shared.Input;
 
   /// <summary>
   /// Contract for listening to XR input events
   /// </summary>
-  public interface IXRInputEventer
+  public interface IInputEventer
   {
     /// <summary>
     /// Connects a listener to some event
@@ -13,7 +14,7 @@ namespace ODK.Shared.XR
     /// <param name="listener">
     /// The listener <see cref="Action"/>;
     /// </param>
-    public void Connect(Action<IXRInput> listener);
+    public void Connect_Server(InputCommand listener);
 
     /// <summary>
     /// Disconnects a listener from some event
@@ -21,6 +22,6 @@ namespace ODK.Shared.XR
     /// <param name="listener">
     /// The listener <see cref="Action"/>;
     /// </param>
-    public void Disconnect(Action<IXRInput> listener);
+    public void Disconnect_Server(InputCommand listener);
   }
 }

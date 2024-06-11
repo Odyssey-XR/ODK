@@ -1,11 +1,11 @@
-namespace ODK.Shared.XR
+namespace ODK.Shared.Player
 {
   using UnityEngine;
 
   /// <summary>
   /// Contract for an XR device's input actions
   /// </summary>
-  public interface IXRInput
+  public interface IInputEvent
   {
     /// <summary>
     /// Reads the primary button pressed input from some controller
@@ -13,15 +13,15 @@ namespace ODK.Shared.XR
     /// <returns>
     /// True if the primary button was pressed
     /// </returns>
-    bool IsPrimaryButtonPressed();
+    bool IsPrimaryButtonPressed_Authority(bool consume=true);
 
     /// <summary>
     /// Reads the secondary button pressed input from some controller
     /// </summary>
     /// <returns>
-    /// True if the seconday button was pressed
+    /// True if the secondary button was pressed
     /// </returns>
-    bool IsSecondaryButtonPressed();
+    bool IsSecondaryButtonPressed_Authority(bool consume=true);
 
     /// <summary>
     /// Reads the menu button pressed input from some controller
@@ -29,7 +29,7 @@ namespace ODK.Shared.XR
     /// <returns>
     /// True if the menu button was pressed
     /// </returns>
-    bool IsMenuButtonPressed();
+    bool IsMenuButtonPressed_Authority(bool consume=true);
 
     /// <summary>
     /// Reads the thumbstick pressed input from some controller
@@ -37,7 +37,7 @@ namespace ODK.Shared.XR
     /// <returns>
     /// True if the thumbstick was pressed
     /// </returns>
-    bool IsThumbstickPressed();
+    bool IsThumbstickPressed_Authority(bool consume=true);
 
     /// <summary>
     /// Reads the trigger button pressed input from some controller
@@ -45,7 +45,7 @@ namespace ODK.Shared.XR
     /// <returns>
     /// True if the trigger button was pressed
     /// </returns>
-    bool IsTriggerPressed();
+    bool IsTriggerPressed_Authority(bool consume=true);
 
     /// <summary>
     /// Reads the grip button pressed input from some controller
@@ -53,7 +53,7 @@ namespace ODK.Shared.XR
     /// <returns>
     /// True if the grip button was pressed
     /// </returns>
-    bool IsGripPressed();
+    bool IsGripPressed_Authority(bool consume=true);
 
     /// <summary>
     /// Reads the primary button touched input from some controller
@@ -61,7 +61,7 @@ namespace ODK.Shared.XR
     /// <returns>
     /// True if the primary button was touched 
     /// </returns>
-    bool IsPrimaryButtonTouched();
+    bool IsPrimaryButtonTouched_Authority(bool consume=true);
 
     /// <summary>
     /// Reads the secondary button touched input from some controller
@@ -69,7 +69,7 @@ namespace ODK.Shared.XR
     /// <returns>
     /// True if the secondary button was touched 
     /// </returns>
-    bool IsSecondaryButtonTouched();
+    bool IsSecondaryButtonTouched_Authority(bool consume=true);
 
     /// <summary>
     /// Reads the menu button touched input from some controller
@@ -77,7 +77,7 @@ namespace ODK.Shared.XR
     /// <returns>
     /// True if the menu button was touched 
     /// </returns>
-    bool IsMenuButtonTouched();
+    bool IsMenuButtonTouched_Authority(bool consume=true);
 
     /// <summary>
     /// Reads the thumbstick touched input from some controller
@@ -85,7 +85,7 @@ namespace ODK.Shared.XR
     /// <returns>
     /// True if the thumbstick was touched 
     /// </returns>
-    bool IsThumbstickTouched();
+    bool IsThumbstickTouched_Authority(bool consume=true);
 
     /// <summary>
     /// Reads the trigger button touched input from some controller
@@ -93,7 +93,7 @@ namespace ODK.Shared.XR
     /// <returns>
     /// True if the trigger button was touched 
     /// </returns>
-    bool IsTriggerTouched();
+    bool IsTriggerTouched_Authority(bool consume=true);
 
     /// <summary>
     /// Reads the grip button touched input from some controller
@@ -101,7 +101,7 @@ namespace ODK.Shared.XR
     /// <returns>
     /// True if the grip button was touched 
     /// </returns>
-    bool IsGripTouched();
+    bool IsGripTouched_Authority(bool consume=true);
 
     /// <summary>
     /// Reads the trigger value input from some controller
@@ -109,7 +109,7 @@ namespace ODK.Shared.XR
     /// <returns>
     /// The value of the trigger button
     /// </returns>
-    float TriggerValue();
+    float TriggerValue_Authority(bool consume=true);
 
     /// <summary>
     /// Reads the grip value input from some controller
@@ -117,7 +117,7 @@ namespace ODK.Shared.XR
     /// <returns>
     /// The value of the grip button
     /// </returns>
-    float GripValue();
+    float GripValue_Authority(bool consume=true);
 
     /// <summary>
     /// Reads the thumbstick value input from some controller
@@ -125,6 +125,6 @@ namespace ODK.Shared.XR
     /// <returns>
     /// The value of the thumbstick
     /// </returns>
-    Vector2 ThumbstickValue();
+    Vector2 ThumbstickValue_Authority(bool consume=true);
   }
 }
