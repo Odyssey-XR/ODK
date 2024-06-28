@@ -20,7 +20,7 @@ namespace ODK.Shared.Transforms
 
       movement.y = 0;
 
-      return movement.normalized * speed * Time.deltaTime;
+      return movement.normalized * (speed * Time.deltaTime);
     }
 
     /// <inheritdoc />
