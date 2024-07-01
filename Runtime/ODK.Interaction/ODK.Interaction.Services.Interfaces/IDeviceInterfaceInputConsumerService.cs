@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace ODK.Interaction.Services.Interfaces
 {
-  public interface IDeviceInterfaceInputConsumerService
+  internal interface IDeviceInterfaceInputConsumerService
   {
     bool ConsumePressedInput(ref DeviceInterfaceInputModel inputModel, DeviceInterface button);
     bool ConsumeTouchedInput(ref DeviceInterfaceInputModel inputModel, DeviceInterface button);

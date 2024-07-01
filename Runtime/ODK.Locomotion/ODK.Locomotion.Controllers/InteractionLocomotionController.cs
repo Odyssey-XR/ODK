@@ -1,24 +1,26 @@
 using ODK.Extensions;
 using ODK.Interaction.Controllers.Interfaces;
+using ODK.Locomotion.ODK.Locomotion.Models;
 using ODK.Locomotion.Services.Interfaces;
+using ODK.Netcode.Prediction;
 using Omni.Attributes;
 using Omni.Providers;
-using Unity.Netcode;
 using UnityEngine;
 
 namespace ODK.Locomotion.Controllers
 {
-  public partial class InteractionLocomotionController : NetworkBehaviour
+  public partial class InteractionLocomotionController : PredictedBehaviour<MovementInputModel, TransformStateModel>
   {
-    [SerializeField]
+    private const float _speed = 0.5f;
+    
+    [SerializeField] 
     private ContainerProvider _inputContainer;
 
-    private NetworkVariable<Vector3> _direction = new(writePerm: NetworkVariableWritePermission.Owner);
-    private NetworkVariable<Vector3> _forward = new(writePerm: NetworkVariableWritePermission.Owner);
-    private NetworkVariable<Vector3> _right = new(writePerm: NetworkVariableWritePermission.Owner);
+    private Vector3 _direction;
+    private Vector3 _forward;
+    private Vector3 _right;
 
-    private IPrimaryDeviceInputController _primaryDeviceInputController =>
-      _inputContainer.GetLocalInstanceOf<IPrimaryDeviceInputController>();
+    private IPrimaryDeviceInputController _primaryDeviceInputController => _inputContainer.GetLocalInstanceOf<IPrimaryDeviceInputController>();
 
     private IDevicePointerInput _devicePointer => _inputContainer.GetLocalInstanceOf<IDevicePointerInput>();
 
@@ -39,30 +41,47 @@ namespace ODK.Locomotion.Controllers
     {
       if (!IsServer)
         return;
-
-      float speed = 0.05f;
-      Vector3? newPosition = _locomotionService?.UpdatePosition(
-        transform,
-        _direction.Value,
-        _forward.Value,
-        _right.Value,
-        speed
-      );
-      transform.position = newPosition ?? transform.position;
     }
 
     private void OnInput(IDeviceInterfaceInput input)
     {
       Vector2 direction = input.ThumbstickValue();
-      _direction.Value  = new Vector3(direction.x, 0, direction.y);
-      _forward.Value    = _devicePointer.PointerForward.XZ();
-      _right.Value      = _devicePointer.PointerRight.XZ();
+      _direction = new Vector3(direction.x, 0, direction.y);
+      _forward = _devicePointer.PointerForward.XZ();
+      _right = _devicePointer.PointerRight.XZ();
     }
 
-    [ServerRpc]
-    private void UpdatePosition_ServerRpc(Vector3 direction, Vector3 forward, Vector3 right)
+    protected override MovementInputModel ReadInput()
     {
+      return new MovementInputModel()
+      {
+        Direction = _direction,
+        Forward = _forward,
+        Right = _right,
+      };
+    }
+
+    protected override TransformStateModel Simulate(MovementInputModel input)
+    {
+      Vector3 newPosition = _locomotionService?.UpdatePosition(
+        transform,
+        _direction,
+        _forward,
+        _right,
+        _speed
+      ) ?? transform.position;
       
+      transform.position = newPosition;
+
+      return new TransformStateModel
+      {
+        Position = newPosition,
+      };
+    }
+
+    protected override void Reconcile(TransformStateModel reconcileState)
+    {
+      transform.position = reconcileState.Position;
     }
   }
 }

@@ -3,7 +3,7 @@ using UnityEngine.InputSystem;
 
 namespace ODK.Interaction.Services.Interfaces
 {
-  public interface IDeviceInputReaderService
+  internal interface IDeviceInputReaderService
   {
     TransformInputModel       ReadTransformInput(InputActionAsset inputAction);
     DeviceInterfaceInputModel ReadDeviceInterfaceInput(InputActionAsset inputAction);

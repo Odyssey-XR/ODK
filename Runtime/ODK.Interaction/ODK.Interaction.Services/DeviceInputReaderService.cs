@@ -10,7 +10,7 @@ using UnityEngine.InputSystem;
 namespace ODK.Interaction.Services
 {
   [BurstCompile]
-  public struct DeviceInputReaderService : IDeviceInputReaderService
+  internal struct DeviceInputReaderService : IDeviceInputReaderService
   {
     public TransformInputModel ReadTransformInput(InputActionAsset inputAction)
     {

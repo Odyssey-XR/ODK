@@ -7,7 +7,7 @@ using UnityEngine;
 namespace ODK.Interaction.Services
 {
   [BurstCompile]
-  public struct DeviceInterfaceInputConsumerService : IDeviceInterfaceInputConsumerService
+  internal struct DeviceInterfaceInputConsumerService : IDeviceInterfaceInputConsumerService
   {
     public bool ConsumePressedInput(ref DeviceInterfaceInputModel inputModel, DeviceInterface button)
     {
