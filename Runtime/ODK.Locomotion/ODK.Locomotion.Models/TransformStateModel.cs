@@ -12,9 +12,9 @@ namespace ODK.Locomotion.ODK.Locomotion.Models
 
     public bool ShouldReconcile(TransformStateModel clientPredicted, TransformStateModel serverPredicted)
     {
-      if (Vector3.Distance(clientPredicted.Position, serverPredicted.Position) >= 1f)
+      if (Vector3.Distance(clientPredicted.Position, serverPredicted.Position) >= 10f)
         return true;
-      if (Vector3.Distance(clientPredicted.Rotation, serverPredicted.Rotation) >= 1f)
+      if (Vector3.Distance(clientPredicted.Rotation, serverPredicted.Rotation) >= 10f)
         return true;
       return false;
     }

@@ -13,9 +13,7 @@ namespace ODK.Locomotion.ODK.Locomotion.Models
     
     public bool ShouldReconcile(MovementInputModel clientInput)
     {
-      return Mathf.Abs(Direction.x) > 1 || Direction.y != 0 || Mathf.Abs(Direction.z) > 1 ||
-             Mathf.Abs(Forward.x) > 1 || Forward.y != 0 || Mathf.Abs(Forward.z) > 1 ||
-             Mathf.Abs(Right.x) > 1 || Right.y != 0 || Mathf.Abs(Right.z) > 1;
+      return Mathf.Abs(clientInput.Direction.x) > 1 || clientInput.Direction.y != 0 || Mathf.Abs(clientInput.Direction.z) > 1;
     }
 
     public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter

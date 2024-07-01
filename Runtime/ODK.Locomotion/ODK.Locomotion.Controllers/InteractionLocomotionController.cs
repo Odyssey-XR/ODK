@@ -11,7 +11,7 @@ namespace ODK.Locomotion.Controllers
 {
   public partial class InteractionLocomotionController : PredictedBehaviour<MovementInputModel, TransformStateModel>
   {
-    private const float _speed = 0.5f;
+    private const float _speed = 0.05f;
     
     [SerializeField] 
     private ContainerProvider _inputContainer;
@@ -37,12 +37,6 @@ namespace ODK.Locomotion.Controllers
       _primaryDeviceInputController.ConnectToInterfaceInputEventStack(OnInput);
     }
 
-    private void FixedUpdate()
-    {
-      if (!IsServer)
-        return;
-    }
-
     private void OnInput(IDeviceInterfaceInput input)
     {
       Vector2 direction = input.ThumbstickValue();
@@ -51,32 +45,34 @@ namespace ODK.Locomotion.Controllers
       _right = _devicePointer.PointerRight.XZ();
     }
 
-    protected override MovementInputModel ReadInput()
+    protected override bool ReadInput(out MovementInputModel input)
     {
-      return new MovementInputModel()
+      input = new MovementInputModel()
       {
         Direction = _direction,
         Forward = _forward,
         Right = _right,
       };
+      return true;
     }
 
-    protected override TransformStateModel Simulate(MovementInputModel input)
+    protected override bool Simulate(MovementInputModel input, out TransformStateModel state)
     {
       Vector3 newPosition = _locomotionService?.UpdatePosition(
         transform,
-        _direction,
-        _forward,
-        _right,
+        input.Direction,
+        input.Forward,
+        input.Right,
         _speed
       ) ?? transform.position;
       
       transform.position = newPosition;
 
-      return new TransformStateModel
+      state = new TransformStateModel
       {
         Position = newPosition,
       };
+      return true;
     }
 
     protected override void Reconcile(TransformStateModel reconcileState)

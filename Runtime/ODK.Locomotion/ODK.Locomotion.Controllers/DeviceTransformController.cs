@@ -19,24 +19,26 @@ namespace ODK.Locomotion.Controllers
         Debug.LogError($"Provided behaviour does not resolve to an {nameof(IDeviceTransformInput)}");
     }
 
-    protected override TransformInputModel ReadInput()
+    protected override bool ReadInput(out TransformInputModel input)
     {
-      return new TransformInputModel
+      input = new TransformInputModel
       {
         Position = _deviceTransform.DevicePosition,
         Rotation = _deviceTransform.DeviceRotation.eulerAngles,
       };
+      return true;
     }
 
-    protected override TransformStateModel Simulate(TransformInputModel input)
+    protected override bool Simulate(TransformInputModel input, out TransformStateModel state)
     {
       SetTargetTransform(input.Position, input.Rotation);
 
-      return new TransformStateModel
+      state = new TransformStateModel
       {
         Position = input.Position,
         Rotation = input.Rotation
       };
+      return true;
     }
 
     protected override void Reconcile(TransformStateModel reconcileState)
