@@ -24,7 +24,6 @@ namespace ODK.Interaction.Containers
       Bind<IDeviceInterfaceInputConsumerService, DeviceInterfaceInputConsumerService>();
       LocalBind<IPrimaryDeviceInputController, DeviceInputController>().AsSingleton(_primaryInputController);
       LocalBind<ISecondaryDeviceInputController, DeviceInputController>().AsSingleton(_secondaryInputController);
-      LocalBind<IDevicePointerInput, DeviceInputController>().AsSingleton(_hmdInputController);
     }
   }
 }

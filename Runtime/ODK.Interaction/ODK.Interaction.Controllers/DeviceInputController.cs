@@ -17,9 +17,6 @@ namespace ODK.XR.Interaction.Controllers
   {
     public Vector3    DevicePosition => _transformInputModel.DevicePosition;
     public Quaternion DeviceRotation => _transformInputModel.DeviceRotation;
-    public Vector3    PointerForward => _transformInputModel.GetPointerForward();
-    public Vector3    PointerRight   => _transformInputModel.GetPointerRight();
-    public Vector3    PointerUp      => _transformInputModel.GetPointerUp();
 
     private TransformInputModel _transformInputModel;
 
