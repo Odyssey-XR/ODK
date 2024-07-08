@@ -7,23 +7,24 @@ using UnityEngine;
 
 namespace ODK.Interaction.Containers
 {
-  public class DeviceInputContainer : ContainerProvider
+  public class DeviceInputContainer : NetworkContainer
   {
-    [SerializeField] 
+    [SerializeField]
     private DeviceInputController _primaryInputController;
-    
-    [SerializeField] 
-    private DeviceInputController _secondaryInputController;
 
     [SerializeField]
-    private DeviceInputController _hmdInputController;
-    
-    private void Awake()
+    private DeviceInputController _secondaryInputController;
+
+    protected override void OnBind(ContainerProvider container)
     {
-      Bind<IDeviceInputReaderService, DeviceInputReaderService>();
-      Bind<IDeviceInterfaceInputConsumerService, DeviceInterfaceInputConsumerService>();
-      LocalBind<IPrimaryDeviceInputController, DeviceInputController>().AsSingleton(_primaryInputController);
-      LocalBind<ISecondaryDeviceInputController, DeviceInputController>().AsSingleton(_secondaryInputController);
+      container.Bind<IDeviceInputReaderService, DeviceInputReaderService>();
+      container.Bind<IDeviceInterfaceInputConsumerService, DeviceInterfaceInputConsumerService>();
+    }
+
+    protected override void OnOwnerBind(ContainerProvider container)
+    {
+      container.Bind<IPrimaryDeviceInputController, DeviceInputController>().AsSingleton(_primaryInputController);
+      container.Bind<ISecondaryDeviceInputController, DeviceInputController>().AsSingleton(_secondaryInputController);
     }
   }
 }

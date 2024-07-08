@@ -7,16 +7,20 @@ using UnityEngine;
 
 namespace ODK.Locomotion.ODK.Locomotion.Containers
 {
-  public class LocomotionContainer : ContainerProvider
+  public class LocomotionContainer : NetworkContainer 
   {
     [SerializeField]
     private PointerController _hmd;
     
-    private void Awake()
+    protected override void OnBind(ContainerProvider container)
     {
-      Bind<ILocomotionService, LinearLocomotionService>();
-      Bind<IRotationService, SmoothTurnRotationService>();
-      LocalBind<IPointer, PointerController>().AsSingleton(_hmd);
+      container.Bind<ILocomotionService, LinearLocomotionService>();
+      container.Bind<IRotationService, SmoothTurnRotationService>();
+    }
+
+    protected override void OnOwnerBind(ContainerProvider container)
+    {
+      container.Bind<IPointer, PointerController>().AsSingleton(_hmd);
     }
   }
 }

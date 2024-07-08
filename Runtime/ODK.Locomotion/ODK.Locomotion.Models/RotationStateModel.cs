@@ -11,7 +11,7 @@ namespace ODK.Locomotion.ODK.Locomotion.Models
 
     public bool ShouldReconcile(RotationStateModel clientPredicted, RotationStateModel serverPredicted)
     {
-      return Vector3.Distance(clientPredicted.EulerAngles, serverPredicted.EulerAngles) >= 50f;
+      return Vector3.Distance(clientPredicted.EulerAngles, serverPredicted.EulerAngles) >= 180f;
     }
 
     public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter

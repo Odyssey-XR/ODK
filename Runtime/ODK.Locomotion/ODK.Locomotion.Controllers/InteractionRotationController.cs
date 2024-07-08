@@ -1,9 +1,9 @@
+using ODK.Extensions;
 using ODK.Interaction.Controllers.Interfaces;
 using ODK.Locomotion.ODK.Locomotion.Models;
 using ODK.Locomotion.Services.Interfaces;
 using ODK.Netcode.Prediction;
 using Omni.Attributes;
-using Omni.Providers;
 using UnityEngine;
 
 namespace ODK.Locomotion.Controllers
@@ -12,15 +12,11 @@ namespace ODK.Locomotion.Controllers
   {
     private const float _speed = 65f;
 
-    [SerializeField]
-    private ContainerProvider _inputContainer;
-
-    private ISecondaryDeviceInputController _deviceInputController => _inputContainer.GetLocalInstanceOf<ISecondaryDeviceInputController>();
-
     private Vector3 _eulerAngles;
     
     [Inject]
     private partial void Inject(
+      [Private] ISecondaryDeviceInputController _deviceInputController,
       [Private] IRotationService _rotationService 
     );
 
@@ -29,7 +25,7 @@ namespace ODK.Locomotion.Controllers
       if (!IsClient || !IsOwner)
         return;
 
-      _deviceInputController.ConnectToInterfaceInputEventStack(OnInput);
+      this.ConnectToDeviceInput(() => _deviceInputController, OnInput);
     }
 
     private void OnInput(IDeviceInterfaceInput input)
