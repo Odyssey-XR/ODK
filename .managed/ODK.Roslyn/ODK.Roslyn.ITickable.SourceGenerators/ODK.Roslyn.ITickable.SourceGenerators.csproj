@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <LangVersion>latest</LangVersion>
+        <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.3.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\ODK.Roslyn.Tickable.SyntaxReceivers\ODK.Roslyn.Tickable.SyntaxReceivers.csproj"/>
+    </ItemGroup>
+
+    <Target Name="CopyFiles" AfterTargets="Build">
+        <ItemGroup>
+            <OutputFiles Include="$(OutputPath)**\*.dll"/>
+            <OutputFiles Include="$(OutputPath)**\*.pdb"/>
+        </ItemGroup>
+        <Copy SourceFiles="@(OutputFiles)" DestinationFolder="$(OutputPath)..\..\..\..\..\..\Runtime\ODK.Rosyln"/>
+    </Target>
+
+</Project>

@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <IsPackable>false</IsPackable>
+        <Nullable>enable</Nullable>
+        <LangVersion>latest</LangVersion>
+        <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\ODK.Roslyn.SyntaxReceivers\ODK.Roslyn.SyntaxReceivers.csproj" />
+    </ItemGroup>
+
+    <Target Name="CopyFiles" AfterTargets="Build">
+        <ItemGroup>
+            <OutputFiles Include="$(OutputPath)**\*.dll" />
+            <OutputFiles Include="$(OutputPath)**\*.pdb" />
+        </ItemGroup>
+        <Copy SourceFiles="@(OutputFiles)" DestinationFolder="$(OutputPath)..\..\..\..\..\..\Runtime\ODK.Rosyln" />
+    </Target>
+
+</Project>

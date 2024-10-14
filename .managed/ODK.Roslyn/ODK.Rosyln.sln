@@ -1,0 +1,71 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ODK.Roslyn.Netcode.Analysers", "ODK.Roslyn.Netcode.Analysers\ODK.Roslyn.Netcode.Analysers.csproj", "{6B49FCCE-E897-4762-A71C-FF4CA52F9F17}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ODK.Roslyn.Netcode.Enums", "ODK.Roslyn.Netcode.Enums\ODK.Roslyn.Netcode.Enums.csproj", "{77978E00-7E34-49C3-A564-36C2EAF84C35}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Netcode", "Netcode", "{2AFF885F-D653-441A-B992-EB0621820565}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tickable", "Tickable", "{3E37DD8B-53F2-42BA-844B-12122F7E887F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ODK.Roslyn.Tickable.Interfaces", "ODK.Roslyn.Tickable.Interfaces\ODK.Roslyn.Tickable.Interfaces.csproj", "{5BDAEBCB-1008-4A3A-AA67-A66BCF06FE9C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ODK.Roslyn.Extensions", "ODK.Roslyn.Extensions\ODK.Roslyn.Extensions.csproj", "{5F049898-82C0-4367-BBAB-5FDBD6C95873}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ODK.Roslyn.Injection.Attributes", "ODK.Roslyn.Injection.Attributes\ODK.Roslyn.Injection.Attributes.csproj", "{35CF8342-A9C3-4FE5-8FBE-9DEEC8C50356}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ODK.Roslyn.Tickable.SyntaxReceivers", "ODK.Roslyn.Tickable.SyntaxReceivers\ODK.Roslyn.Tickable.SyntaxReceivers.csproj", "{FE5F11F5-6001-4183-82F8-82ABA773CA99}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Injection", "Injection", "{4DC0FC42-BC04-4CE3-84EB-0054DE92AB1F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ODK.Roslyn.SyntaxReceivers", "ODK.Roslyn.SyntaxReceivers\ODK.Roslyn.SyntaxReceivers.csproj", "{793B2B66-304D-479C-B689-13B18A348228}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ODK.Roslyn.ITickable.SourceGenerators", "ODK.Roslyn.ITickable.SourceGenerators\ODK.Roslyn.ITickable.SourceGenerators.csproj", "{B1D1B758-1956-4AA1-86C8-ED3CA0D1861C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6B49FCCE-E897-4762-A71C-FF4CA52F9F17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B49FCCE-E897-4762-A71C-FF4CA52F9F17}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B49FCCE-E897-4762-A71C-FF4CA52F9F17}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B49FCCE-E897-4762-A71C-FF4CA52F9F17}.Release|Any CPU.Build.0 = Release|Any CPU
+		{77978E00-7E34-49C3-A564-36C2EAF84C35}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{77978E00-7E34-49C3-A564-36C2EAF84C35}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{77978E00-7E34-49C3-A564-36C2EAF84C35}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{77978E00-7E34-49C3-A564-36C2EAF84C35}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5BDAEBCB-1008-4A3A-AA67-A66BCF06FE9C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5BDAEBCB-1008-4A3A-AA67-A66BCF06FE9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5BDAEBCB-1008-4A3A-AA67-A66BCF06FE9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5BDAEBCB-1008-4A3A-AA67-A66BCF06FE9C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F049898-82C0-4367-BBAB-5FDBD6C95873}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F049898-82C0-4367-BBAB-5FDBD6C95873}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F049898-82C0-4367-BBAB-5FDBD6C95873}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F049898-82C0-4367-BBAB-5FDBD6C95873}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35CF8342-A9C3-4FE5-8FBE-9DEEC8C50356}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35CF8342-A9C3-4FE5-8FBE-9DEEC8C50356}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35CF8342-A9C3-4FE5-8FBE-9DEEC8C50356}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35CF8342-A9C3-4FE5-8FBE-9DEEC8C50356}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FE5F11F5-6001-4183-82F8-82ABA773CA99}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE5F11F5-6001-4183-82F8-82ABA773CA99}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE5F11F5-6001-4183-82F8-82ABA773CA99}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE5F11F5-6001-4183-82F8-82ABA773CA99}.Release|Any CPU.Build.0 = Release|Any CPU
+		{793B2B66-304D-479C-B689-13B18A348228}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{793B2B66-304D-479C-B689-13B18A348228}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{793B2B66-304D-479C-B689-13B18A348228}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{793B2B66-304D-479C-B689-13B18A348228}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B1D1B758-1956-4AA1-86C8-ED3CA0D1861C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1D1B758-1956-4AA1-86C8-ED3CA0D1861C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1D1B758-1956-4AA1-86C8-ED3CA0D1861C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B1D1B758-1956-4AA1-86C8-ED3CA0D1861C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{6B49FCCE-E897-4762-A71C-FF4CA52F9F17} = {2AFF885F-D653-441A-B992-EB0621820565}
+		{77978E00-7E34-49C3-A564-36C2EAF84C35} = {2AFF885F-D653-441A-B992-EB0621820565}
+		{5BDAEBCB-1008-4A3A-AA67-A66BCF06FE9C} = {3E37DD8B-53F2-42BA-844B-12122F7E887F}
+		{FE5F11F5-6001-4183-82F8-82ABA773CA99} = {3E37DD8B-53F2-42BA-844B-12122F7E887F}
+		{35CF8342-A9C3-4FE5-8FBE-9DEEC8C50356} = {4DC0FC42-BC04-4CE3-84EB-0054DE92AB1F}
+	EndGlobalSection
+EndGlobal

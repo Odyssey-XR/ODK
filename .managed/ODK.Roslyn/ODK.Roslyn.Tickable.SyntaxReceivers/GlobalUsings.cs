@@ -1,0 +1,1 @@
+global using ODK.Roslyn.SyntaxReceivers;
