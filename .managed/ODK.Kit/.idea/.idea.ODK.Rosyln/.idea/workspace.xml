@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="1b41eb73-5f46-4b20-88c3-064456b19bc3" name="Changes" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="DpaMonitoringSettings">
+    <option name="autoShow" value="false" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/426b2d071006454fa4babef82da6bf0d728478/91/2b9594fb/SourceGeneratorAdaptor.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/ODK.Kit.Interfaces/IComponent.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/ODK.Kit.Interfaces/INetworkComponent.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/ODK.Kit.Netcode.Analysers/NetworkMethodAnalyser.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/ODK.Kit.SourceGenerators/ComponentGenerator.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/ODK.Netcode.Enums/NetworkContext.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/ODK.Roslyn.Extensions/INamedTypeSymbolExtensions.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/ODK.Roslyn.SyntaxReceivers/BaseTypeSyntaxReceiver.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/ODK.Roslyn.SyntaxReceivers/ComponentInterfaceSyntaxReceiver.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/ODK.Roslyn.Tickable.SourceGenerators/TickableGenerator.cs" root0="FORCE_HIGHLIGHTING" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 5
+}</component>
+  <component name="ProjectId" id="2lHSqSccdlcaKgu5GOHyUsqNplf" />
+  <component name="ProjectViewState">
+    <option name="autoscrollToSource" value="true" />
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="openDirectoriesWithSingleClick" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;.NET Executable.Source Generators.executor&quot;: &quot;Debug&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;XThreadsFramesViewSplitterKey&quot;: &quot;0.24074075&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/Workspace/Src/OdysseyXR/DevSix/Packages/com.odysseyxr.odk.kit/.managed/ODK.Roslyn/ODK.Rosyln.sln&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RunManager">
+    <configuration name="Source Generators" type="RunExe" factoryName=".NET Executable">
+      <option name="EXE_PATH" value="C:/Program Files/Unity/Hub/Editor/2022.3.20f1/Editor/Data/DotNetSdkRoslyn/csc.dll" />
+      <option name="PROGRAM_PARAMETERS" value="@&quot;D:\Workspace\Src\OdysseyXR\Arcadia\Library\Bee\artifacts\1300b0aEDbg.dag\Assembly-CSharp.rsp&quot;" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../../../.." />
+      <option name="PASS_PARENT_ENVS" value="1" />
+      <option name="USE_EXTERNAL_CONSOLE" value="0" />
+      <option name="USE_MONO" value="0" />
+      <option name="RUNTIME_ARGUMENTS" value="" />
+      <method v="2">
+        <option name="Build Solution" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="1b41eb73-5f46-4b20-88c3-064456b19bc3" name="Changes" comment="" />
+      <created>1724835701373</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1724835701373</updated>
+      <workItem from="1724835702414" duration="7110000" />
+      <workItem from="1724859817902" duration="1051000" />
+      <workItem from="1724860919831" duration="1523000" />
+      <workItem from="1725010767912" duration="2779000" />
+      <workItem from="1725031383860" duration="1374000" />
+      <workItem from="1725276364430" duration="626000" />
+      <workItem from="1725890414108" duration="217000" />
+      <workItem from="1726327443196" duration="1368000" />
+      <workItem from="1726330510139" duration="6192000" />
+      <workItem from="1726401455050" duration="1594000" />
+      <workItem from="1726497179080" duration="9287000" />
+      <workItem from="1726911988445" duration="2060000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="UnityProjectConfiguration" hasMinimizedUI="false" />
+  <component name="VcsManagerConfiguration">
+    <option name="LOCAL_CHANGES_DETAILS_PREVIEW_SHOWN" value="false" />
+    <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+  </component>
+  <component name="XDebuggerManager">
+    <watches-manager>
+      <configuration name="RunExe">
+        <watch expression="sourceBuilder.ToString()" language="C#" />
+        <watch expression="classSymbol.ContainingNamespace.Name" language="C#" />
+      </configuration>
+    </watches-manager>
+  </component>
+</project>
